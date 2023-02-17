@@ -1,0 +1,41 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  fieldOfView 1
+  orientation 0.24376880663188394 -5.442694905877232e-17 -0.9698333717259203 3.141592653589795
+  position 11.76880700547819 -0.10470444830780547 5.67234661952584
+}
+Background {
+  skyColor [
+    0.4 0.4 0.8
+    0 0 0
+  ]
+  luminosity 0
+}
+RectangleArena {
+  translation 0 -0.11 0.004548
+  floorSize 10 10
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+}
+PointLight {
+  attenuation 0 0 0.2
+  intensity 1.1
+  location 4 2 0.3
+  radius 10
+}
+E-puck {
+  hidden translation_1 0 0.026 0.02
+  hidden rotation_1 0 0.9999999999999999 0 5.788797666923463
+  hidden translation_2 0 -0.025999999999999995 0.02
+  hidden rotation_2 0 -1 0 5.4565766855488835
+  rotation 0 1 0 0.44894688340544153
+  controller "my_controller"
+}
