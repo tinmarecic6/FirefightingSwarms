@@ -4,6 +4,7 @@
 #  from controller import Robot, Motor, DistanceSensor
 from controller import Robot
 
+light_threshold = 3000
 def run_robot(robot):
 	
 	timestep = int(robot.getBasicTimeStep())
@@ -35,13 +36,21 @@ def run_robot(robot):
 		for sensor_i in light_sensors:
 			temp_sensor_val = sensor_i.getValue()
 			sensor_vals[sensor_i.getName()] = temp_sensor_val
-		print(f"{sensor_vals['ls7'] % 6}")
-		left_motor.setVelocity(sensor_vals["ls7"] % 6)
-		right_motor.setVelocity(sensor_vals["ls0"] % 6)
-		# print(high_sensor_val,avg_sensor_vals[sensor_i.getName()])
-
-		# Enter here functions to send actuator commands, like:
-		#  motor.setPosition(10.0)
+		# print(f"sensor 7:{sensor_vals['ls7']}")
+		# print(f"sensor 0:{sensor_vals['ls0']}")
+		if sensor_vals["ls7"] > sensor_vals["ls0"]:
+			left_motor.setVelocity(3)
+			right_motor.setVelocity(1)
+		elif sensor_vals["ls0"] > sensor_vals["ls7"]:
+			left_motor.setVelocity(1)
+			right_motor.setVelocity(3)
+		else:
+			left_motor.setVelocity(5)
+			right_motor.setVelocity(5)
+		if sensor_vals["ls0"] < 100:
+			left_motor.setVelocity(0)
+			right_motor.setVelocity(0)
+			
 		pass
 
 # Enter here exit cleanup code.

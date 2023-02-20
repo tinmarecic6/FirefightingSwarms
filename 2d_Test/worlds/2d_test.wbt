@@ -3,13 +3,14 @@
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/balls/protos/Ball.proto"
 
 WorldInfo {
 }
 Viewpoint {
   fieldOfView 1
-  orientation 0.24376880663188394 -5.442694905877232e-17 -0.9698333717259203 3.141592653589795
-  position 11.76880700547819 -0.10470444830780547 5.67234661952584
+  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
+  position 0 0 13.416525657805671
 }
 Background {
   skyColor [
@@ -25,17 +26,42 @@ RectangleArena {
     type "light strip"
   }
 }
-PointLight {
-  attenuation 0 0 0.2
-  intensity 1.1
-  location 4 2 0.3
-  radius 10
-}
 E-puck {
+  hidden position_0_0 59.568266647802695
+  hidden position_0_1 56.88041515094468
   hidden translation_1 0 0.026 0.02
-  hidden rotation_1 0 0.9999999999999999 0 5.788797666923463
-  hidden translation_2 0 -0.025999999999999995 0.02
-  hidden rotation_2 0 -1 0 5.4565766855488835
-  rotation 0 1 0 0.44894688340544153
+  hidden rotation_1 0 -1 0 3.2635864239931704
+  hidden translation_2 0 -0.02600000000000126 0.02
+  hidden rotation_2 0 -1 0 5.951437920851187
+  translation -1.5149289212835826 1.3758882610991343 0.0044840379858715924
+  rotation -8.217724679046104e-11 2.6220084178249675e-11 -1 0.6109302651402916
+  name "FireControllerRobot"
+  controller "fire"
+  supervisor TRUE
+}
+DEF e-puck E-puck {
+  hidden translation_1 0 0.026 0.02
+  hidden rotation_1 0 1 0 4.03702036672255
+  hidden translation_2 0 -0.02599999999999875 0.02
+  hidden rotation_2 0 1 0 3.7170755346438535
+  translation 0.2077979401868852 -1.5497668031909164 0.004484037985871835
+  rotation -7.951627350252702e-10 -8.987351579936448e-10 1 1.693920913298007
   controller "my_controller"
+}
+DEF e-puck2 E-puck {
+  hidden position_0_0 99.077086825805
+  hidden position_0_1 102.98089396969611
+  hidden translation_1 0 0.025999999999998736 0.02
+  hidden rotation_1 0 -1 0 1.4538780890683864
+  hidden translation_2 0 -0.026000000000001227 0.02
+  hidden rotation_2 0 0.9999999999999999 0 2.449929054822728
+  translation -1.826096031287909 -0.08393647999550104 0.004484038015898835
+  rotation -2.8006012658755272e-05 0.00024288693497494614 0.9999999701107997 0.22956674130440355
+  name "e-puck(2)"
+  controller "my_controller"
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 10
+  location 0 0.3 1
 }
