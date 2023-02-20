@@ -1,0 +1,188 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.3278471223681416 0.22175797925520538 0.9183352672045088 2.0299231926473897
+  position 0.5510717811301019 -0.727698785615235 0.6542232714066855
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+}
+Robot {
+  translation 0 0 0.06
+  children [
+    DEF LeftSensor DistanceSensor {
+      translation 0.05 0.01 0
+      rotation 0 0 1 0.5
+      children [
+        DEF LeftSensor Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "LeftSensor"
+      boundingObject USE LeftSensor
+      physics Physics {
+      }
+    }
+    DEF RightSensor DistanceSensor {
+      translation 0.05 -0.01 0
+      rotation 0 0 1 -0.5
+      children [
+        DEF RightSensor Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "RightSensor"
+      boundingObject USE RightSensor
+      physics Physics {
+      }
+    }
+    DEF BackLeftWheel HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.03 -0.03 0
+      }
+      device [
+        RotationalMotor {
+          name "BackLeftWheel"
+        }
+      ]
+      endPoint Solid {
+        translation -0.03 -0.03 0
+        rotation 1 0 0 1.57
+        children [
+          DEF Wheel Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.02
+            }
+          }
+        ]
+        boundingObject USE Wheel
+        physics Physics {
+        }
+      }
+    }
+    DEF BackRightWheel HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.03 0.03 0
+      }
+      device [
+        RotationalMotor {
+          name "BackRightWheel"
+        }
+      ]
+      endPoint Solid {
+        translation -0.03 0.03 0
+        rotation 1 0 0 1.57
+        children [
+          DEF Wheel Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.02
+            }
+          }
+        ]
+        name "solid(1)"
+        boundingObject USE Wheel
+        physics Physics {
+        }
+      }
+    }
+    DEF FrontRightWheel HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0.03 0.03 0
+      }
+      device [
+        RotationalMotor {
+          name "FrontRightWheel"
+        }
+      ]
+      endPoint Solid {
+        translation 0.03 0.03 0
+        rotation 1 0 0 1.57
+        children [
+          DEF Wheel Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.02
+            }
+          }
+        ]
+        name "solid(2)"
+        boundingObject USE Wheel
+        physics Physics {
+        }
+      }
+    }
+    DEF FrontLeftWheel HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0.03 -0.03 0
+      }
+      device [
+        RotationalMotor {
+          name "FrontLeftWheel"
+        }
+      ]
+      endPoint Solid {
+        translation 0.03 -0.03 0
+        rotation 1 0 0 1.57
+        children [
+          DEF Wheel Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.02
+            }
+          }
+        ]
+        name "solid(3)"
+        boundingObject USE Wheel
+        physics Physics {
+        }
+      }
+    }
+    DEF Body Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        metalness 0
+      }
+      geometry Box {
+        size 0.1 0.05 0.02
+      }
+    }
+  ]
+  name "MyRobot"
+  boundingObject USE Body
+  physics Physics {
+  }
+  controller "RobotController"
+}
