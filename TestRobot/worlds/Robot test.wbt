@@ -1,25 +1,23 @@
 #VRML_SIM R2023a utf8
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.3278471223681416 0.22175797925520538 0.9183352672045088 2.0299231926473897
-  position 0.5510717811301019 -0.727698785615235 0.6542232714066855
+  orientation -0.408570768739701 0.09446448234745729 0.9078250869557839 2.7278150760304083
+  position 7.398147050787496 -0.570965107081203 5.62425788677061
 }
 TexturedBackground {
 }
-TexturedBackgroundLight {
-}
 RectangleArena {
+  floorSize 10 10
 }
 Robot {
   translation 0 0 0.06
   children [
-    DEF LeftSensor DistanceSensor {
+    DEF LeftSensor LightSensor {
       translation 0.05 0.01 0
       rotation 0 0 1 0.5
       children [
@@ -33,11 +31,8 @@ Robot {
         }
       ]
       name "LeftSensor"
-      boundingObject USE LeftSensor
-      physics Physics {
-      }
     }
-    DEF RightSensor DistanceSensor {
+    DEF RightSensor LightSensor {
       translation 0.05 -0.01 0
       rotation 0 0 1 -0.5
       children [
@@ -185,4 +180,9 @@ Robot {
   physics Physics {
   }
   controller "RobotController"
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 0.1
+  location 4 4 0.1
 }
