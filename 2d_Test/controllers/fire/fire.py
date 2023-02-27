@@ -8,7 +8,7 @@ fire_locations = {}
 robot = Supervisor()
 root = robot.getRoot()
 light_intensity_default = 0.1
-light_intensity_increment = 0.1
+light_intensity_increment = 0.01
 light_intensity_decrement = 0.2
 
 
@@ -29,13 +29,18 @@ def generateFire():
 	generatedLights = 0
 	children = root.getField('children')
 	children.importMFNodeFromString(-1,'DEF SteenRobot SimpleRobot { translation 0 4 0.1 }')
-	# children.importMFNodeFromString(-1,'DEF PointLightFire1 PointLight { location 1 3 0.3 attenuation 0 0 1 intensity 2}')
-	# children.importMFNodeFromString(-1,'DEF PointLightFire2 PointLight { location 1 4 0.3 attenuation 0 0 1 intensity 2}')
-	# light_node = robot.getFromDef('PointLightFire1')
-	# light_node2 = robot.getFromDef('PointLightFire2')
+	for i in range(no_lights):
+		id,x,y = get_fire_location()
+		children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(x)+' '+str(y)+' 0.1 attenuation 0 0 1}')
 	while robot.step(timestep) != -1:
-		
-		children.importMFNodeFromString(-1,'DEF PointLightFire PointLight { location '+str(x)+' '+str(y)+' 0.1 attenuation 0 0 1}')
+		for key, value in fire_locations.items():
+			temp_light_node = robot.getFromDef("PointLight"+str(key))
+			temp_light_intensity_field = temp_light_node.getField("intensity")
+			temp_light_intensity = temp_light_intensity_field.getSFFloat()
+			if temp_light_intensity<5:
+				temp_light_intensity += light_intensity_increment
+				temp_light_intensity_field.setSFFloat(temp_light_intensity)
+
 		"""
 		if len(fire_locations) != 0:
 			for idFireLoc,fireLoc in enumerate(fire_locations):
@@ -46,16 +51,7 @@ def generateFire():
 				print(light_intensity)
 				light_intensity_field.setSFFloat(light_intensity)
 		"""
-		"""
-		fire_translation = fire_translation_field.getSFVec3f()
-		t = [fire_translation[0], fire_translation[1], fire_translation[2]]
-		t[1] = 10000000
-		fire_translation_field.setSFVec3f(t)
-		"""
-		#time.sleep(1)
-
-
-
+		
 if __name__ == '__main__':
 	generateFire()
 

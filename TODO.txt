@@ -4,6 +4,6 @@ Tin:
 3.Generate one light and then add a chance that it generates another one after his intensity is high enough
 
 Steen:
-1.Try to reduce the intensity of the light once the robot is close enough
-2.Delete the light once the robot is close enough(simulate extinguishing fire)
+1.Try to reduce the intensity of the light once the robot is close enough --Done
+2.Delete the light once the robot is close enough(simulate extinguishing fire) --Done
 3.MAYBE: Try to make the robot search for the fire
