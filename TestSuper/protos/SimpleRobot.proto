@@ -3,14 +3,16 @@ PROTO SimpleRobot [
   field SFVec3f    translation  0 0 0.06
   field SFRotation rotation     0 0 1 0
   field SFString   name         "MyRobot"
+  field SFString   controller   "RobotController"
 ]
 {
   Robot {
   translation IS translation
   rotation IS rotation
   name IS name
+  controller IS controller
   children [
-    DEF LeftSensor DistanceSensor {
+    DEF LeftSensor LightSensor {
       translation 0.05 0.01 0
       rotation 0 0 1 0.5
       children [
@@ -24,11 +26,8 @@ PROTO SimpleRobot [
         }
       ]
       name "LeftSensor"
-      boundingObject USE LeftSensor
-      physics Physics {
-      }
     }
-    DEF RightSensor DistanceSensor {
+    DEF RightSensor LightSensor {
       translation 0.05 -0.01 0
       rotation 0 0 1 -0.5
       children [
@@ -174,6 +173,5 @@ PROTO SimpleRobot [
   boundingObject USE Body
   physics Physics {
   }
-  controller "RobotController"
   }
 }
