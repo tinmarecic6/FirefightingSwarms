@@ -10,7 +10,7 @@ WorldInfo {
 Viewpoint {
   fieldOfView 1
   orientation 0.18802316608644076 -0.0023619737088356003 -0.9821617535289336 3.1662524735993522
-  position 14.591102081324662 2.6539989486982885 6.03684504812338
+  position 14.301675663468856 2.6612671247646245 5.921778604610592
 }
 Background {
   skyColor [
@@ -25,11 +25,6 @@ RectangleArena {
   floorAppearance Parquetry {
     type "light strip"
   }
-}
-PointLight {
-  attenuation 0 0 1
-  intensity 2
-  location 0 0 0.5
 }
 DEF SupervisorRobot Robot {
   controller "fire"

@@ -3,15 +3,16 @@ from controller import Supervisor
 import time,random,math,numpy
 from collections import Counter
 
+bounds = (-5,5)
 no_lights = 5
-fire_square = (0,3)
+fire_square = (-5,5)
 fire_locations = {}
 robot = Supervisor()
 root = robot.getRoot()
 light_intensity_default = 0.1
 light_intensity_increment = 0.01
 light_intensity_decrement = 0.2
-light_max = 2
+light_max = 3
 light_threshold = 1
 light_gen_chance = 0.001
 
@@ -30,22 +31,30 @@ def generate_fire_location():
 	light_id = add_fire_location(x,y)
 	return light_id,x,y
 
+def get_quadrant(x,y,dir_more_less):
+	dist = random.uniform(0.2,0.8)
+	if dir_more_less < 0.25:
+		new_x = x-dist 
+		new_y = y+dist
+	elif dir_more_less >= 0.25 and dir_more_less < 0.5:
+		new_x = x+dist 
+		new_y = y+dist
+	elif dir_more_less >=0.5 and dir_more_less < 0.75:
+		new_x = x-dist 
+		new_y = y-dist
+	elif dir_more_less >= 0.75 and dir_more_less <=1:
+		new_x = x+dist
+		new_y = y-dist
+	return new_x,new_y
+
 def get_random_adjecent_location(id):
-	#less than 0.5 generates a fire on x axis, greater on y axis
 	dist = 0.5
-	dir_x_y = numpy.random.uniform()
 	dir_more_less = numpy.random.uniform()
-	distance = dist if dir_more_less <0.5 else dist*-1
 	x,y = fire_locations[id]
-	new_x = x+distance if dir_x_y < dist else x
-	new_y = y+distance if dir_x_y >= dist else y
+	new_x, new_y = get_quadrant(x,y,dir_more_less)
 	while (new_x,new_y) in fire_locations.values():
-		dir_x_y = numpy.random.uniform()
 		dir_more_less = numpy.random.uniform()
-		distance = dist if dir_more_less <0.5 else dist*-1
-		x,y = fire_locations[id]
-		new_x = x+distance if dir_x_y < dist else x
-		new_y = y+distance if dir_x_y >= dist else y
+		new_x, new_y = get_quadrant(x,y,dir_more_less)
 	light_id = add_fire_location(new_x,new_y)
 	return light_id,new_x,new_y
 
@@ -76,6 +85,7 @@ def generateFire():
 			if temp_light_intensity > light_threshold:
 				cur_chance = numpy.random.uniform()
 				if cur_chance <= light_gen_chance:
+					print("New point")
 					id,new_x,new_y = get_random_adjecent_location(key)
 					children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
 		# 	print(key,fire_locations[key])
