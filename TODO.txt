@@ -1,7 +1,7 @@
 Tin:
-1.Generate 5-6 lights and change their intensity
-2.Try to generate the lights so they are adjecent to eachother
-3.Generate one light and then add a chance that it generates another one after his intensity is high enough
+1.Generate 5-6 lights and change their intensity--Done
+2.Try to generate the lights so they are adjecent to eachother --Done
+3.Generate one light and then add a chance that it generates another one after his intensity is high enough --Done
 
 Steen:
 1.Try to reduce the intensity of the light once the robot is close enough --Done
