@@ -37,11 +37,15 @@ def get_random_adjecent_location(id):
 	dir_more_less = numpy.random.uniform()
 	distance = dist if dir_more_less <0.5 else dist*-1
 	x,y = fire_locations[id]
-	new_x = x+distance if dir_x_y < 0.5 else x
-	new_y = y+distance if dir_x_y >= 0.5 else y
-	if (new_x,new_y) in fire_locations.values():
-		print("Already in dict, trying again")
-		get_random_adjecent_location(id)
+	new_x = x+distance if dir_x_y < dist else x
+	new_y = y+distance if dir_x_y >= dist else y
+	while (new_x,new_y) in fire_locations.values():
+		dir_x_y = numpy.random.uniform()
+		dir_more_less = numpy.random.uniform()
+		distance = dist if dir_more_less <0.5 else dist*-1
+		x,y = fire_locations[id]
+		new_x = x+distance if dir_x_y < dist else x
+		new_y = y+distance if dir_x_y >= dist else y
 	light_id = add_fire_location(new_x,new_y)
 	return light_id,new_x,new_y
 
@@ -62,7 +66,6 @@ def generateFire():
 		result = {k: v for k, v in fire_locations.items() if counts[v] > 1}
 		if result:
 			print(result)
-		
 		for key in list(fire_locations):
 			temp_light_node = robot.getFromDef("PointLight"+str(key))
 			temp_light_intensity_field = temp_light_node.getField("intensity")
