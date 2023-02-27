@@ -50,7 +50,7 @@ def generateFire():
 		t[1] = 10000000
 		fire_translation_field.setSFVec3f(t)
 		"""
-		#reduceFire("SteenRobot")
+		reduceFire("SteenRobot")
 		#time.sleep(1)
 		
 def reduceFire(robotName):
@@ -58,7 +58,6 @@ def reduceFire(robotName):
 	fireSeeker = robot.getFromDef(robotName)
 	fireSeekerLocation = fireSeeker.getField('translation')
 	fireSeekerLocationVector = fireSeekerLocation.getSFVec3f()
-	print("fire: "+str(fireSeekerLocationVector))
 	fireSeekerLocationVector2d = [fireSeekerLocationVector[0],fireSeekerLocationVector[1]]
 	toRemoveIds = []
 	for idFireLoc,fireLoc in enumerate(fire_locations):
@@ -69,11 +68,11 @@ def reduceFire(robotName):
 			light_node = robot.getFromDef('PointLightFire'+str(idFireLoc+1))
 			light_intensity_field = light_node.getField('intensity')
 			light_intensity = light_intensity_field.getSFFloat()
-			if 0 > light_intensity-(light_intensity_decrement*2):
+			if 0 > light_intensity-(light_intensity_decrement):
 				light_node.remove()
 				toRemoveIds.append(idFireLoc)
 			else:
-				light_intensity-=light_intensity_increment*2
+				light_intensity-=light_intensity_decrement
 				light_intensity_field.setSFFloat(light_intensity)
 	fire_locations = [v for i, v in enumerate(fire_locations) if i not in toRemoveIds]
 				
