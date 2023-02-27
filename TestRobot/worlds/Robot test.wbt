@@ -7,7 +7,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.408570768739701 0.09446448234745729 0.9078250869557839 2.7278150760304083
-  position 7.398147050787496 -0.570965107081203 5.62425788677061
+  position 4.736301661195713 0.3582308850991722 5.7332848156108644
 }
 TexturedBackground {
 }
@@ -185,4 +185,13 @@ PointLight {
   attenuation 0 0 1
   intensity 0.1
   location 4 4 0.1
+}
+Robot {
+  translation 0 1.81 0.1
+  children [
+    DEF PointLight PointLight {
+      attenuation 0 0 1
+    }
+  ]
+  controller "LightController"
 }

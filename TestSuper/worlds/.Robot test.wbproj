@@ -5,6 +5,6 @@ sceneTreePerspectives: 000000ff00000001000000030000001e0000019200000000010000000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 1 "controllers/fire/fire.py" "controllers/RobotController/RobotController.py"
+textFiles: 0 "controllers/RobotController/RobotController.py" "controllers/fire/fire.py"
 globalOptionalRendering: DistanceSensorRays::LightSensorRays
 consoles: Console:All:All
