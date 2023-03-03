@@ -7,6 +7,8 @@ bounds = (-5,5)
 no_lights = 5
 fire_square = (-5,5)
 fire_locations = {}
+fire_changes = {}
+fire_changes2 = {}
 robot = Supervisor()
 root = robot.getRoot()
 light_intensity_default = 0.1
@@ -67,9 +69,11 @@ def add_fire_changes():
 		fire_changes[key] = light_intensity_increment
 
 def handle_fire_changes():
-	global fire_changes
+	global fire_changes,fire_changes2
 	toRemoveIds = []
-	print(fire_changes)
+	if fire_changes != fire_changes2:
+		fire_changes2 = fire_changes
+		print(fire_changes)
 	for key in list(fire_changes):
 		temp_light_node = robot.getFromDef("PointLight"+str(key))
 		temp_light_intensity_field = temp_light_node.getField("intensity")
@@ -80,8 +84,9 @@ def handle_fire_changes():
 		elif temp_light_intensity + fire_changes[key] < light_max:
 			temp_light_intensity += fire_changes[key]
 			temp_light_intensity_field.setSFFloat(temp_light_intensity)
-	print("removed"+str(toRemoveIds))
-	[fire_locations.pop(key) for key in toRemoveIds]
+	if len(toRemoveIds) != 0:
+		print("removed"+str(toRemoveIds))
+		[fire_locations.pop(key) for key in toRemoveIds]
 
 def reduceFire(robotName):
 	global fire_changes
@@ -93,7 +98,7 @@ def reduceFire(robotName):
 	for idFireLoc, fireLoc in fire_locations.items():
 		fireLoc2d = [fireLoc[0],fireLoc[1]]
 		distance = math.dist(fireSeekerLocationVector2d, fireLoc2d)
-		if distance<1:
+		if distance<2:
 			fire_changes[idFireLoc] -= light_intensity_decrement
 
 def generateFire():
