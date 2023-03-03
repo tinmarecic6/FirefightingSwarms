@@ -16,8 +16,8 @@ for i in range(4):
     wheels[i].setVelocity(0.0)
 
 def HandleLight(left, right):
-    leftSpeed = 0
-    rightSpeed = 0
+    leftSpeed = -2
+    rightSpeed = 2
     if (left == 1000 and right == 1000):
         leftSpeed = 0
         rightSpeed = 0
@@ -41,6 +41,8 @@ def HandleLight(left, right):
 while robot.step(TIME_STEP) != -1:
     leftSensor = ds[0].getValue()
     rightSensor = ds[1].getValue()
+    if leftSensor == 1000 or leftSensor == 0:
+        print("Left: ",leftSensor," Right: ",rightSensor)
     HandleLight(leftSensor, rightSensor)
     
     
