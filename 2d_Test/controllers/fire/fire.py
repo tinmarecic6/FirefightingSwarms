@@ -15,12 +15,14 @@ light_intensity_decrement = 0.2
 light_max = 3
 light_threshold = 1
 light_gen_chance = 0.001
+num_fires = 0
 
 
 def add_fire_location(x,y):
-	light_id = len(fire_locations)+1
-	fire_locations.update({light_id:(x,y)})
-	return light_id
+	global num_fires
+	num_fires = num_fires+1
+	fire_locations.update({num_fires:(x,y)})
+	return num_fires
 
 def generate_fire_location():
 	y = random.randint(fire_square[0],fire_square[1])
@@ -58,7 +60,41 @@ def get_random_adjecent_location(id):
 	light_id = add_fire_location(new_x,new_y)
 	return light_id,new_x,new_y
 
+def add_fire_changes():
+	global fire_changes
+	fire_changes = {}
+	for key in list(fire_locations):
+		fire_changes[key] = light_intensity_increment
 
+def handle_fire_changes():
+	global fire_changes
+	toRemoveIds = []
+	print(fire_changes)
+	for key in list(fire_changes):
+		temp_light_node = robot.getFromDef("PointLight"+str(key))
+		temp_light_intensity_field = temp_light_node.getField("intensity")
+		temp_light_intensity = temp_light_intensity_field.getSFFloat()
+		if temp_light_intensity+fire_changes[key]<0:
+			toRemoveIds.append(key)
+			temp_light_node.remove()
+		elif temp_light_intensity + fire_changes[key] < light_max:
+			temp_light_intensity += fire_changes[key]
+			temp_light_intensity_field.setSFFloat(temp_light_intensity)
+	print("removed"+str(toRemoveIds))
+	[fire_locations.pop(key) for key in toRemoveIds]
+
+def reduceFire(robotName):
+	global fire_changes
+	global fire_locations
+	fireSeeker = robot.getFromDef(robotName)
+	fireSeekerLocation = fireSeeker.getField('translation')
+	fireSeekerLocationVector = fireSeekerLocation.getSFVec3f()
+	fireSeekerLocationVector2d = [fireSeekerLocationVector[0],fireSeekerLocationVector[1]]
+	for idFireLoc, fireLoc in fire_locations.items():
+		fireLoc2d = [fireLoc[0],fireLoc[1]]
+		distance = math.dist(fireSeekerLocationVector2d, fireLoc2d)
+		if distance<1:
+			fire_changes[idFireLoc] -= light_intensity_decrement
 
 def generateFire():
 	timestep = int(robot.getBasicTimeStep())
@@ -79,9 +115,6 @@ def generateFire():
 			temp_light_node = robot.getFromDef("PointLight"+str(key))
 			temp_light_intensity_field = temp_light_node.getField("intensity")
 			temp_light_intensity = temp_light_intensity_field.getSFFloat()
-			if temp_light_intensity < light_max:
-				temp_light_intensity += light_intensity_increment
-				temp_light_intensity_field.setSFFloat(temp_light_intensity)
 			if temp_light_intensity > light_threshold:
 				cur_chance = numpy.random.uniform()
 				if cur_chance <= light_gen_chance:
@@ -89,6 +122,9 @@ def generateFire():
 					id,new_x,new_y = get_random_adjecent_location(key)
 					children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
 		# 	print(key,fire_locations[key])
+		add_fire_changes()
+		reduceFire("SteenRobot")
+		handle_fire_changes()
 		# print("-----------------")
 			
 		
