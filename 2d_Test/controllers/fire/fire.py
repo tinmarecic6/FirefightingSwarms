@@ -9,23 +9,24 @@ root = robot.getRoot()
 Variables for the fire simulation
 """
 no_lights = 10
-fire_square = (45,50)
+fire_square = (10,20)
 fire_locations = {}
 fire_changes = {}
 fire_changes2 = {}
 light_intensity_default = 0.1
 light_intensity_increment = 0.01
 light_intensity_decrement = 0.001
-light_max = 3
+light_max = 2
 light_threshold = 1
 light_gen_chance = 0.001
 num_fires = 0
+max_number_of_fire_nodes = 48
 
 """
 Variables for the robot simulation
 """
 timestep = int(robot.getBasicTimeStep())
-green_area = (-90,-80)
+green_area = (-15,-10)
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
@@ -43,6 +44,26 @@ def double_check(dict_to_check):
 		return True
 	return False
 
+def get_floor_size(robot):
+	floor = robot.getFromDef("RectangularArena")
+	floor_size_field = floor.getField("floorSize")
+	floor_size = floor_size_field.getSFVec2f()
+	return floor_size
+
+def in_arena(x,y,floor_size):
+	#x = int
+	#y = int
+	#floor_size = tuple(a:int,b:int)
+	"""
+	x needs to be between -a/2,a/2
+	y needs to be between -b/2,b/2
+	"""
+	print(floor_size)
+	a,b = floor_size[0],floor_size[1]
+	if -a/2 <= x <= a/2 and -b/2 <= y <= b/2:
+		return True
+	return False
+
 """
 Fire functions
 """
@@ -52,7 +73,7 @@ def add_fire_location(x,y):
 	fire_locations.update({num_fires:(x,y)})
 	return num_fires
 
-def generate_random_location():
+def get_random_fire_location():
 	y = random.randint(fire_square[0],fire_square[1])
 	x = random.randint(fire_square[0],fire_square[1])
 	while (x,y) in fire_locations.values():
@@ -62,7 +83,7 @@ def generate_random_location():
 	return light_id,x,y
 
 def get_quadrant(x,y,dir_more_less):
-	dist = random.uniform(0.2,0.8)
+	dist = random.uniform(1,2)
 	if dir_more_less < 0.25:
 		new_x = x-dist 
 		new_y = y+dist
@@ -82,7 +103,7 @@ def get_random_adjecent_location(id):
 	dir_more_less = numpy.random.uniform()
 	x,y = fire_locations[id]
 	new_x, new_y = get_quadrant(x,y,dir_more_less)
-	while (new_x,new_y) in fire_locations.values():
+	while (new_x,new_y) in fire_locations.values() or not in_arena(new_x,new_y,get_floor_size(robot)):
 		dir_more_less = numpy.random.uniform()
 		new_x, new_y = get_quadrant(x,y,dir_more_less)
 	light_id = add_fire_location(new_x,new_y)
@@ -128,8 +149,8 @@ def reduceFire(robotName):
 def generateFire():
 	children = root.getField('children')
 	for i in range(no_lights):
-		id,x,y = generate_random_location()
-		children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(x)+' '+str(y)+' 0.1 attenuation 0 0 5 intensity 0.1}')
+		id,x,y = get_random_fire_location()
+		children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(x)+' '+str(y)+' 0.1 attenuation 0 0 5 intensity 0.01}')
 	simulate_fire(children)
 
 def simulate_fire(children):
@@ -142,8 +163,7 @@ def simulate_fire(children):
 			temp_light_intensity = temp_light_intensity_field.getSFFloat()
 			if temp_light_intensity > light_threshold:
 				cur_chance = numpy.random.uniform()
-				if cur_chance <= light_gen_chance:
-					print("New point")
+				if cur_chance <= light_gen_chance and len(fire_locations) < max_number_of_fire_nodes:
 					id,new_x,new_y = get_random_adjecent_location(key)
 					children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
 		add_fire_changes()
@@ -155,13 +175,9 @@ def simulate_fire(children):
 Robot functions
 """
 def get_random_robot_locations():
-	floor = robot.getFromDef("RectangularArena")
-	floor_size_field = floor.getField("floorSize")
-	floor_size = floor_size_field.getSFVec2f()
-	
 	y = random.randint(green_area[0],green_area[1])
 	x = random.randint(green_area[0],green_area[1])
-	while (x,y) in robots.values():
+	while (x,y) in robots.values() and in_arena(x,y,get_floor_size(robot)):
 		y = random.randint(green_area[0],green_area[1])
 		x = random.randint(green_area[0],green_area[1])
 	robot_id = max(robots) + 1 if robots else 1
