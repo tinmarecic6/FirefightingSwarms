@@ -8,9 +8,8 @@ root = robot.getRoot()
 """
 Variables for the fire simulation
 """
-bounds = (-5,5)
 no_lights = 10
-fire_square = (-5,5)
+fire_square = (45,50)
 fire_locations = {}
 fire_changes = {}
 fire_changes2 = {}
@@ -26,7 +25,7 @@ num_fires = 0
 Variables for the robot simulation
 """
 timestep = int(robot.getBasicTimeStep())
-green_area = (2,4)
+green_area = (-90,-80)
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
@@ -156,6 +155,10 @@ def simulate_fire(children):
 Robot functions
 """
 def get_random_robot_locations():
+	floor = robot.getFromDef("RectangularArena")
+	floor_size_field = floor.getField("floorSize")
+	floor_size = floor_size_field.getSFVec2f()
+	
 	y = random.randint(green_area[0],green_area[1])
 	x = random.randint(green_area[0],green_area[1])
 	while (x,y) in robots.values():
