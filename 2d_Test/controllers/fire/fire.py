@@ -58,7 +58,6 @@ def in_arena(x,y,floor_size):
 	x needs to be between -a/2,a/2
 	y needs to be between -b/2,b/2
 	"""
-	print(floor_size)
 	a,b = floor_size[0],floor_size[1]
 	if -a/2 <= x <= a/2 and -b/2 <= y <= b/2:
 		return True
