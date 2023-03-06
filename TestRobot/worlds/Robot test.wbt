@@ -6,8 +6,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.408570768739701 0.09446448234745729 0.9078250869557839 2.7278150760304083
-  position 4.736301661195713 0.3582308850991722 5.7332848156108644
+  orientation -0.42818157915330984 0.1317319901412587 0.8940398302353207 2.6047638681071916
+  position 9.666259689559713 -3.9379646201402263 12.17109218321366
 }
 TexturedBackground {
 }
@@ -187,7 +187,7 @@ Robot {
   }
   controller "RobotController"
   battery [
-    100
+    1, 100, 10
   ]
   cpuConsumption 0
 }
@@ -195,4 +195,24 @@ PointLight {
   attenuation 0 0 1
   intensity 0.1
   location 4 4 0.1
+}
+Charger {
+  translation 2.44 2.32 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        metalness 0
+        emissiveColor 0 0.5 0
+      }
+      geometry Cylinder {
+        height 1
+        radius 0.05
+      }
+    }
+  ]
+  battery [
+    50, 100, 15
+  ]
+  radius 1
 }
