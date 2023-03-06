@@ -7,6 +7,6 @@ maximizedDockId: -1
 centralWidgetVisible: 1
 projectionMode: PERSPECTIVE
 orthographicViewHeight: 7.10626
-textFiles: 1 "../2d_Test/controllers/RobotController/RobotController.py" "../2d_Test/controllers/fire/fire.py"
+textFiles: 1 "controllers/RobotController/RobotController.py" "controllers/fire/fire.py"
 globalOptionalRendering: LightSensorRays::CameraFrustums::CoordinateSystem::DistanceSensorRays
 consoles: Console:All:All
