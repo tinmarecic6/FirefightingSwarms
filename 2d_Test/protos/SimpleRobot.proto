@@ -26,7 +26,6 @@ PROTO SimpleRobot [
         }
       ]
       name "LeftSensor"
-	  colorFilter 0.1 0.1 0.1
     }
     DEF RightSensor LightSensor {
       translation 0.05 -0.01 0
@@ -42,7 +41,9 @@ PROTO SimpleRobot [
         }
       ]
       name "RightSensor"
-      colorFilter 0.1 0.1 0.1
+      boundingObject USE RightSensor
+      physics Physics {
+      }
     }
     DEF BackLeftWheel HingeJoint {
       jointParameters HingeJointParameters {

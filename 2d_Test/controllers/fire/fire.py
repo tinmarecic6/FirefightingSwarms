@@ -1,32 +1,59 @@
 """fire controller."""
 from controller import Supervisor
-import time,random,math,numpy
+import random,math,numpy
 from collections import Counter
 
+robot = Supervisor()
+root = robot.getRoot()
+"""
+Variables for the fire simulation
+"""
 bounds = (-5,5)
-no_lights = 5
+no_lights = 10
 fire_square = (-5,5)
 fire_locations = {}
 fire_changes = {}
 fire_changes2 = {}
-robot = Supervisor()
-root = robot.getRoot()
 light_intensity_default = 0.1
 light_intensity_increment = 0.01
-light_intensity_decrement = 0.05
-light_max = 1
-light_threshold = 0.5
+light_intensity_decrement = 0.001
+light_max = 3
+light_threshold = 1
 light_gen_chance = 0.001
 num_fires = 0
 
+"""
+Variables for the robot simulation
+"""
+timestep = int(robot.getBasicTimeStep())
+green_area = (2,4)
+light_intensity_decrement = 0.2
+robot_name_constant = "FireRobot"
+robots = {}
 
+"""
+Helper functions
+"""
+def double_check(dict_to_check):
+	#Check for no fires with the same location
+	# Create a Counter from the dictionary values
+	counts = Counter(dict_to_check.values())
+	# Create a new dictionary with only the keys whose value has a count greater than 1
+	result = {k: v for k, v in dict_to_check.items() if counts[v] > 1}
+	if result:
+		return True
+	return False
+
+"""
+Fire functions
+"""
 def add_fire_location(x,y):
 	global num_fires
 	num_fires = num_fires+1
 	fire_locations.update({num_fires:(x,y)})
 	return num_fires
 
-def generate_fire_location():
+def generate_random_location():
 	y = random.randint(fire_square[0],fire_square[1])
 	x = random.randint(fire_square[0],fire_square[1])
 	while (x,y) in fire_locations.values():
@@ -73,7 +100,6 @@ def handle_fire_changes():
 	toRemoveIds = []
 	if fire_changes != fire_changes2:
 		fire_changes2 = fire_changes
-		print(fire_changes)
 	for key in list(fire_changes):
 		temp_light_node = robot.getFromDef("PointLight"+str(key))
 		temp_light_intensity_field = temp_light_node.getField("intensity")
@@ -85,7 +111,6 @@ def handle_fire_changes():
 			temp_light_intensity += fire_changes[key]
 			temp_light_intensity_field.setSFFloat(temp_light_intensity)
 	if len(toRemoveIds) != 0:
-		print("removed"+str(toRemoveIds))
 		[fire_locations.pop(key) for key in toRemoveIds]
 
 def reduceFire(robotName):
@@ -98,24 +123,20 @@ def reduceFire(robotName):
 	for idFireLoc, fireLoc in fire_locations.items():
 		fireLoc2d = [fireLoc[0],fireLoc[1]]
 		distance = math.dist(fireSeekerLocationVector2d, fireLoc2d)
-		if distance<1:
+		if distance<2:
 			fire_changes[idFireLoc] -= light_intensity_decrement
 
 def generateFire():
-	timestep = int(robot.getBasicTimeStep())
 	children = root.getField('children')
-	children.importMFNodeFromString(-1,'DEF SteenRobot SimpleRobot { translation 0 4 0.1 }')
 	for i in range(no_lights):
-		id,x,y = generate_fire_location()
+		id,x,y = generate_random_location()
 		children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(x)+' '+str(y)+' 0.1 attenuation 0 0 5 intensity 0.1}')
-	while robot.step(timestep) != -1:
+	simulate_fire(children)
 
-		# Create a Counter from the dictionary values
-		counts = Counter(fire_locations.values())
-		# Create a new dictionary with only the keys whose value has a count greater than 1
-		result = {k: v for k, v in fire_locations.items() if counts[v] > 1}
-		if result:
-			print(result)
+def simulate_fire(children):
+	while robot.step(timestep) != -1:
+		if double_check(fire_locations):
+			print("Fires generated on the same location!")
 		for key in list(fire_locations):
 			temp_light_node = robot.getFromDef("PointLight"+str(key))
 			temp_light_intensity_field = temp_light_node.getField("intensity")
@@ -126,16 +147,33 @@ def generateFire():
 					print("New point")
 					id,new_x,new_y = get_random_adjecent_location(key)
 					children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
-		# 	print(key,fire_locations[key])
 		add_fire_changes()
-		reduceFire("SteenRobot")
+		for bot_id in robots.keys():
+			reduceFire(robot_name_constant+str(bot_id))
 		handle_fire_changes()
-		# print("-----------------")
-			
-		
-if __name__ == '__main__':
-	generateFire()
 
+"""
+Robot functions
+"""
+def get_random_robot_locations():
+	y = random.randint(green_area[0],green_area[1])
+	x = random.randint(green_area[0],green_area[1])
+	while (x,y) in robots.values():
+		y = random.randint(green_area[0],green_area[1])
+		x = random.randint(green_area[0],green_area[1])
+	robot_id = max(robots) + 1 if robots else 1
+	robots.update({robot_id:(x,y)})
+	return robot_id,x,y
+
+def gen_swarm(swarm_size):
+	children = root.getField('children')
+	for _ in range(swarm_size):
+		robot_id,x,y = get_random_robot_locations()
+		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 }')
+
+if __name__ == "__main__":
+	gen_swarm(5)
+	generateFire()
 	
 
 
