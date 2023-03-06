@@ -13,9 +13,9 @@ robot = Supervisor()
 root = robot.getRoot()
 light_intensity_default = 0.1
 light_intensity_increment = 0.01
-light_intensity_decrement = 0.2
-light_max = 3
-light_threshold = 1
+light_intensity_decrement = 0.05
+light_max = 1
+light_threshold = 0.5
 light_gen_chance = 0.001
 num_fires = 0
 
@@ -98,7 +98,7 @@ def reduceFire(robotName):
 	for idFireLoc, fireLoc in fire_locations.items():
 		fireLoc2d = [fireLoc[0],fireLoc[1]]
 		distance = math.dist(fireSeekerLocationVector2d, fireLoc2d)
-		if distance<2:
+		if distance<1:
 			fire_changes[idFireLoc] -= light_intensity_decrement
 
 def generateFire():
