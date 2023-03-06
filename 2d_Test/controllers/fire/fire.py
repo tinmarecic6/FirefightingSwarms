@@ -137,14 +137,20 @@ def reduceFire(robotName):
 	global fire_changes
 	global fire_locations
 	fireSeeker = robot.getFromDef(robotName)
-	fireSeekerLocation = fireSeeker.getField('translation')
-	fireSeekerLocationVector = fireSeekerLocation.getSFVec3f()
-	fireSeekerLocationVector2d = [fireSeekerLocationVector[0],fireSeekerLocationVector[1]]
-	for idFireLoc, fireLoc in fire_locations.items():
-		fireLoc2d = [fireLoc[0],fireLoc[1]]
-		distance = math.dist(fireSeekerLocationVector2d, fireLoc2d)
-		if distance<2:
-			fire_changes[idFireLoc] -= light_intensity_decrement
+	fireSeekerBattery = fireSeeker.getField('battery')
+	fireSeekerBatteryValue = fireSeekerBattery.getMFFloat(0)
+	if fireSeekerBatteryValue > 1:
+		fireSeekerLocation = fireSeeker.getField('translation')
+		fireSeekerLocationVector = fireSeekerLocation.getSFVec3f()
+		fireSeekerLocationVector2d = [fireSeekerLocationVector[0],fireSeekerLocationVector[1]]
+		for idFireLoc, fireLoc in fire_locations.items():
+			fireLoc2d = [fireLoc[0],fireLoc[1]]
+			distance = math.dist(fireSeekerLocationVector2d, fireLoc2d)
+			if distance<2:
+				fire_changes[idFireLoc] -= light_intensity_decrement
+				if fireSeekerBattery.getMFFloat(0) < 2:
+					break
+				fireSeekerBattery.setMFFloat(0,fireSeekerBatteryValue-1)
 
 def generateFire():
 	children = root.getField('children')
