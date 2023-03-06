@@ -31,6 +31,7 @@ Robot {
         }
       ]
       name "LeftSensor"
+      colorFilter 0.1 0.1 0.1
     }
     DEF RightSensor LightSensor {
       translation 0.05 -0.01 0
@@ -49,6 +50,7 @@ Robot {
       boundingObject USE RightSensor
       physics Physics {
       }
+      colorFilter 0.1 0.1 0.1
     }
     DEF BackLeftWheel HingeJoint {
       jointParameters HingeJointParameters {
@@ -58,6 +60,7 @@ Robot {
       device [
         RotationalMotor {
           name "BackLeftWheel"
+          consumptionFactor 0
         }
       ]
       endPoint Solid {
@@ -86,6 +89,7 @@ Robot {
       device [
         RotationalMotor {
           name "BackRightWheel"
+          consumptionFactor 0
         }
       ]
       endPoint Solid {
@@ -115,6 +119,7 @@ Robot {
       device [
         RotationalMotor {
           name "FrontRightWheel"
+          consumptionFactor 0
         }
       ]
       endPoint Solid {
@@ -144,6 +149,7 @@ Robot {
       device [
         RotationalMotor {
           name "FrontLeftWheel"
+          consumptionFactor 0
         }
       ]
       endPoint Solid {
@@ -180,18 +186,13 @@ Robot {
   physics Physics {
   }
   controller "RobotController"
+  battery [
+    100
+  ]
+  cpuConsumption 0
 }
 PointLight {
   attenuation 0 0 1
   intensity 0.1
   location 4 4 0.1
-}
-Robot {
-  translation 0 1.81 0.1
-  children [
-    DEF PointLight PointLight {
-      attenuation 0 0 1
-    }
-  ]
-  controller "LightController"
 }
