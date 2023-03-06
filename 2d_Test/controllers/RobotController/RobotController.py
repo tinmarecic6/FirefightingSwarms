@@ -2,7 +2,6 @@ from controller import Robot
 
 TIME_STEP = 64
 robot = Robot()
-print(robot.getName())
 ds = []
 dsNames = ['LeftSensor', 'RightSensor']
 for i in range(2):
@@ -41,9 +40,8 @@ def HandleLight(left, right):
 while robot.step(TIME_STEP) != -1:
     leftSensor = ds[0].getValue()
     rightSensor = ds[1].getValue()
-    if leftSensor == 1000 or leftSensor == 0:
-        print("Left: ",leftSensor," Right: ",rightSensor)
     HandleLight(leftSensor, rightSensor)
     
     
 
+    
