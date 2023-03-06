@@ -26,7 +26,12 @@ RectangleArena {
     type "light strip"
   }
 }
-DEF SupervisorRobot Robot {
+DEF FireSupervisor Robot {
   controller "fire"
+  supervisor TRUE
+}
+DEF RobotSupervisor Robot {
+  name "robot(1)"
+  controller "robot_supervisor_controller"
   supervisor TRUE
 }
