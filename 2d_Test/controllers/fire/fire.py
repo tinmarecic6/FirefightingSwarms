@@ -8,11 +8,16 @@ root = robot.getRoot()
 """
 Fire simulation variables
 """
-no_lights = 10
+no_lights = 5
 fire_square = (0,5)
 fire_squares = {
-	# 1:(-30,25),
-	# 2:
+	1:[(9,9),(10,10),(11,11),(12,12),(13,13),(14,14)], #line 
+	2:[(-10,-10),(0,-10),(-10,10),(0,10),(4,-5),(7,4)], #spread out
+	3:[(-14,0),(-12,-2),(-8,-6),(-6,-10),(-2,-14)], #arch close
+	4:[(-14,0),(-12,2),(-8,6),(-6,10),(-2,12),(14,-14)], #line closing off adjecent corner
+	5:[(-13,4),(-7,3),(-2,0),(2,-4),(1,-10)], #arch a bit further out
+	6:[(-13,4),(-3,3),(7,7),(1,-4),(1,-10)], #arch a bit further out with a single point behind
+	7:[(12,12),(-12,12),(12,-12),(10,0),(0,10)] #very spread  out
 }
 fire_locations = {}
 fire_changes = {}
@@ -30,7 +35,7 @@ max_number_of_fire_nodes = 47
 Robot simulation variables
 """
 timestep = int(robot.getBasicTimeStep())
-green_area = (-10,-5)
+green_area = (-12,-9)
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
@@ -161,11 +166,20 @@ def reduceFire(robotName):
 					break
 				fireSeekerBattery.setMFFloat(0,fireSeekerBatteryValue-1)
 
-def generateFire():
+def generateFire(random_spread = False,formation_id = 0):
 	children = root.getField('children')
-	for i in range(no_lights):
-		id,x,y = get_random_fire_location()
-		children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(x)+' '+str(y)+' 0.1 attenuation 0 0 5 intensity 0.01}')
+	if random_spread:
+		for _ in range(no_lights):
+			id,x,y = get_random_fire_location()
+			children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(x)+' '+str(y)+' 0.1 attenuation 0 0 5 intensity 0.01}')
+	else:
+		if formation_id == 0:
+			formation_id = random.randrange(1,max(fire_squares))
+		current_spread = fire_squares[formation_id]
+		for (x,y) in current_spread:
+			id = add_fire_location(x,y)
+			children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(x)+' '+str(y)+' 0.1 attenuation 0 0 5 intensity 0.01}')
+		print(f"Using formation: {formation_id}")
 	simulate_fire(children)
 
 def simulate_fire(children):
@@ -199,18 +213,18 @@ def get_random_robot_locations():
 	robots.update({robot_id:(x,y)})
 	return robot_id,x,y
 
-def get_predetermined_robot_locations():
 
-
-def gen_swarm(swarm_size):
+def gen_swarm():
 	children = root.getField('children')
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
-	for _ in range(swarm_size):
+	for _ in range(no_lights):
 		robot_id,x,y = get_random_robot_locations()
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 }')
+			
+
 
 if __name__ == "__main__":
-	gen_swarm(5)
+	gen_swarm()
 	generateFire()
 	
 
