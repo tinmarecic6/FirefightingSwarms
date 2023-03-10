@@ -4,7 +4,8 @@ PROTO SimpleRobot [
   field SFRotation rotation     0 0 1 0
   field SFString   name         "MyRobot"
   field SFString   controller   "RobotController"
-  field MFFloat   battery      [100]
+  field MFFloat    battery      [100]
+  field SFString   customData   "10,10"
 ]
 {
   Robot {
@@ -13,6 +14,7 @@ PROTO SimpleRobot [
   name IS name
   controller IS controller
   battery IS battery
+  customData IS customData
   children [
     DEF LeftSensor LightSensor {
       translation 0.05 0.01 0

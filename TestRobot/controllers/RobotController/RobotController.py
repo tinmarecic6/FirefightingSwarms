@@ -2,7 +2,12 @@ from controller import Robot
 
 TIME_STEP = 64
 robot = Robot()
-root = robot.getRoot()
+robot.batterySensorEnable(TIME_STEP)
+charger = robot.getCustomData().split(',')
+gps = robot.getDevice('gps')
+gps.enable(TIME_STEP)
+compass = robot.getDevice('compass')
+compass.enable(TIME_STEP)
 ds = []
 dsNames = ['LeftSensor', 'RightSensor']
 for i in range(2):
@@ -39,14 +44,15 @@ def HandleLight(left, right):
     wheels[3].setVelocity(rightSpeed)
 
 def FindChargingStation():
-    chargingStation = robot.getFromDef("ChargingStation")
-    location = chargingStation.getField("translation").getSFVec3f()
-    print(location)
+    print(int(charger[0]))
+    print(gps.getValues())
+    print(compass.getValues())
 
 
 
 while robot.step(TIME_STEP) != -1:
-    battery = robot.getField("battery").getMFFloat()[0]
+    battery = robot.batterySensorGetValue()
+    FindChargingStation()
     if battery != 1:
         leftSensor = ds[0].getValue()
         rightSensor = ds[1].getValue()

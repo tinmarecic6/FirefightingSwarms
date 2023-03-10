@@ -2,7 +2,6 @@
 PROTO ChargingStation [
   field SFVec3f    translation  0 0 0.06
   field SFString   name         "ChargingStation"
-
 ]
 {
   Charger {
