@@ -2,7 +2,7 @@ from controller import Robot
 
 TIME_STEP = 64
 robot = Robot()
-print(robot.getName())
+root = robot.getRoot()
 ds = []
 dsNames = ['LeftSensor', 'RightSensor']
 for i in range(2):
@@ -16,8 +16,8 @@ for i in range(4):
     wheels[i].setVelocity(0.0)
 
 def HandleLight(left, right):
-    leftSpeed = 0
-    rightSpeed = 0
+    leftSpeed = -2
+    rightSpeed = 2
     if (left == 1000 and right == 1000):
         leftSpeed = 0
         rightSpeed = 0
@@ -37,13 +37,19 @@ def HandleLight(left, right):
     wheels[1].setVelocity(rightSpeed)
     wheels[2].setVelocity(leftSpeed)
     wheels[3].setVelocity(rightSpeed)
-    
-while robot.step(TIME_STEP) != -1:
-    leftSensor = ds[0].getValue()
-    rightSensor = ds[1].getValue()
-    print("left: "+str(leftSensor))
-    print("right: "+str(rightSensor))
-    HandleLight(leftSensor, rightSensor)
-    
-    
 
+def FindChargingStation():
+    chargingStation = robot.getFromDef("ChargingStation")
+    location = chargingStation.getField("translation").getSFVec3f()
+    print(location)
+
+
+
+while robot.step(TIME_STEP) != -1:
+    battery = robot.getField("battery").getMFFloat()[0]
+    if battery != 1:
+        leftSensor = ds[0].getValue()
+        rightSensor = ds[1].getValue()
+        HandleLight(leftSensor, rightSensor)
+    else:
+        FindChargingStation()
