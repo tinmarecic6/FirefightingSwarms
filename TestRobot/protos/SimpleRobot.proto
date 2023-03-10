@@ -4,6 +4,7 @@ PROTO SimpleRobot [
   field SFRotation rotation     0 0 1 0
   field SFString   name         "MyRobot"
   field SFString   controller   "RobotController"
+  field MFFloat   battery      [100]
 ]
 {
   Robot {
@@ -11,6 +12,7 @@ PROTO SimpleRobot [
   rotation IS rotation
   name IS name
   controller IS controller
+  battery IS battery
   children [
     DEF LeftSensor LightSensor {
       translation 0.05 0.01 0
@@ -26,6 +28,7 @@ PROTO SimpleRobot [
         }
       ]
       name "LeftSensor"
+      colorFilter 0.1 0.1 0.1
     }
     DEF RightSensor LightSensor {
       translation 0.05 -0.01 0
@@ -44,6 +47,7 @@ PROTO SimpleRobot [
       boundingObject USE RightSensor
       physics Physics {
       }
+      colorFilter 0.1 0.1 0.1
     }
     DEF BackLeftWheel HingeJoint {
       jointParameters HingeJointParameters {
@@ -53,6 +57,7 @@ PROTO SimpleRobot [
       device [
         RotationalMotor {
           name "BackLeftWheel"
+          consumptionFactor 0
         }
       ]
       endPoint Solid {
@@ -81,6 +86,7 @@ PROTO SimpleRobot [
       device [
         RotationalMotor {
           name "BackRightWheel"
+          consumptionFactor 0
         }
       ]
       endPoint Solid {
@@ -110,6 +116,7 @@ PROTO SimpleRobot [
       device [
         RotationalMotor {
           name "FrontRightWheel"
+          consumptionFactor 0
         }
       ]
       endPoint Solid {
@@ -139,6 +146,7 @@ PROTO SimpleRobot [
       device [
         RotationalMotor {
           name "FrontLeftWheel"
+          consumptionFactor 0
         }
       ]
       endPoint Solid {
@@ -170,8 +178,11 @@ PROTO SimpleRobot [
       }
     }
   ]
+  name "MyRobot"
   boundingObject USE Body
   physics Physics {
   }
-  }
+  controller "RobotController"
+  cpuConsumption 0
+}
 }
