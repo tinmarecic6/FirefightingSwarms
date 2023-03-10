@@ -24,6 +24,8 @@ def get_random_locations():
 
 def gen_swarm(swarm_size):
 	children = root.getField('children')
+	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation 10 10 0.1}')
+	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation 10 10 0.1}')
 	for _ in range(swarm_size):
 		robot_id,x,y = get_random_locations()
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 }')

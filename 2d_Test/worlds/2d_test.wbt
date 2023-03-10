@@ -4,13 +4,14 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/balls/protos/Ball.proto"
 IMPORTABLE EXTERNPROTO "../protos/SimpleRobot.proto"
+IMPORTABLE EXTERNPROTO "../protos/ChargingStation.proto"
 
 WorldInfo {
 }
 Viewpoint {
   fieldOfView 1
   orientation 0.20701660911302333 0.0007637337882175784 -0.9783371301663075 3.1343603865697287
-  position 116.5036324849436 0.09473632220108791 46.553921926626735
+  position 82.93313473144549 -0.15345692952293077 31.680513640710164
 }
 Background {
   skyColor [
@@ -21,7 +22,7 @@ Background {
 }
 DEF RectangularArena RectangleArena {
   translation 0 -0.11 0.004548
-  floorSize 100 100
+  floorSize 30 30
   floorAppearance Parquetry {
     type "light strip"
   }

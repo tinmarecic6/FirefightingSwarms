@@ -6,10 +6,14 @@ from collections import Counter
 robot = Supervisor()
 root = robot.getRoot()
 """
-Variables for the fire simulation
+Fire simulation variables
 """
 no_lights = 10
-fire_square = (10,20)
+fire_square = (0,5)
+fire_squares = {
+	# 1:(-30,25),
+	# 2:
+}
 fire_locations = {}
 fire_changes = {}
 fire_changes2 = {}
@@ -20,16 +24,22 @@ light_max = 2
 light_threshold = 1
 light_gen_chance = 0.001
 num_fires = 0
-max_number_of_fire_nodes = 48
+max_number_of_fire_nodes = 47
 
 """
-Variables for the robot simulation
+Robot simulation variables
 """
 timestep = int(robot.getBasicTimeStep())
-green_area = (-15,-10)
+green_area = (-10,-5)
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
+
+"""
+Charging station variables
+"""
+
+charging_station_location = [-10,-10,0.1]
 
 """
 Helper functions
@@ -189,8 +199,12 @@ def get_random_robot_locations():
 	robots.update({robot_id:(x,y)})
 	return robot_id,x,y
 
+def get_predetermined_robot_locations():
+
+
 def gen_swarm(swarm_size):
 	children = root.getField('children')
+	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	for _ in range(swarm_size):
 		robot_id,x,y = get_random_robot_locations()
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 }')

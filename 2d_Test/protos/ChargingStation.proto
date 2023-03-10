@@ -1,14 +1,13 @@
 #VRML_SIM R2023a utf8
 PROTO ChargingStation [
   field SFVec3f    translation  0 0 0.06
-  field SFRotation rotation     0 0 1 0
-  field SFString   name         "MyRobot"
-  field SFString   controller   "RobotController"
-  field MFFloat   battery      [100]
+  field SFString   name         "ChargingStation"
+
 ]
 {
   Charger {
-  translation 2.44 2.32 0
+  translation IS translation
+  name IS name
   children [
     Shape {
       appearance PBRAppearance {
@@ -23,7 +22,7 @@ PROTO ChargingStation [
     }
   ]
   battery [
-    50, 100, 15
+    100, 100, 100
   ]
   radius 1
 }
