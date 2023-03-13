@@ -2,9 +2,13 @@
 PROTO ChargingStation [
   field SFVec3f    translation  0 0 0.06
   field SFString   name         "ChargingStation"
+  field MFFloat    battery      [100, 100, 100]
+  field SFFloat    radius       2
 ]
 {
   Charger {
+  battery IS battery
+  radius IS radius
   translation IS translation
   name IS name
   children [
@@ -20,9 +24,5 @@ PROTO ChargingStation [
       }
     }
   ]
-  battery [
-    100, 100, 100
-  ]
-  radius 1
 }
 }
