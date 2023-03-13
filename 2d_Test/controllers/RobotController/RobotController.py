@@ -54,33 +54,13 @@ def getRobotBearing():
 
 def cartesianConvertCompassBearingToHeading(heading):
     heading = 360-heading
-    heading = heading + 90
     if (heading > 360.0):
         heading = heading - 360.0
     return heading
 
-def cartesianCalcDestinationThetaInDegrees(currentCoordinate, destinationCoordinate):
-    return math.atan2(destinationCoordinate[1] - currentCoordinate[1], destinationCoordinate[0] - currentCoordinate[0]) * 180 / math.pi
-
-def cartesianConvertVec3fToCartesianVec2f(coordinate3f):
-    return [coordinate3f[0],-coordinate3f[2]]
-
-def cartesianCalcThetaDot(heading, destinationTheta):
-    theta_dot = destinationTheta - heading
-    if (theta_dot > 180):
-        theta_dot = -(360-theta_dot)
-    elif (theta_dot < -180):
-        theta_dot = (360+theta_dot)
-    return theta_dot
-
-def positioningControllerCalcThetaDotToDestination(destinationCoordinate):
-	currentCoordinate = cartesianConvertVec3fToCartesianVec2f(gps.getValues())
-	robotHeading = cartesianConvertCompassBearingToHeading(getRobotBearing())
-	destinationTheta = cartesianCalcDestinationThetaInDegrees(currentCoordinate, destinationCoordinate)
-	return cartesianCalcThetaDot(robotHeading, destinationTheta)
-
 def FindChargingStation():
-    print(positioningControllerCalcThetaDotToDestination([int(charger[0]),int(charger[1])]))
+    print(cartesianConvertCompassBearingToHeading(getRobotBearing()))
+    #[int(charger[0]),int(charger[1])]
 
 
 
