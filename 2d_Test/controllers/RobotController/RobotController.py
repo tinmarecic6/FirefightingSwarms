@@ -62,20 +62,20 @@ def getAngle(point1, point2):
 def FindChargingStation():
     #print(getRobotBearing())
     #print(gps.getValues(),charger)
-    print(getAngle(charger,gps.getValues()),getRobotBearing())
+    # print(getAngle(charger,gps.getValues()),getRobotBearing())
     angleCharging = getAngle(charger,gps.getValues())+180
     angleRobot = (getRobotBearing()+180)%360
-    print(angleCharging,angleRobot)
+    # print(angleCharging,angleRobot)
     angleDifference = angleCharging - angleRobot
     if angleDifference > 180:
         angleDifference -=360
-    print(angleDifference)
-    leftSpeed = 0
-    rightSpeed = 0
-    if angleDifference > 0:
+    # print(angleDifference)
+    leftSpeed = 10
+    rightSpeed = 10
+    if angleDifference > 10:
         leftSpeed = -5
         rightSpeed = 10
-    elif angleDifference < 0:
+    elif angleDifference < -10:
         leftSpeed = 10
         rightSpeed = -5
     wheels[0].setVelocity(leftSpeed)

@@ -10,8 +10,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1
-  orientation -0.45761377640605555 0.45698785539887715 0.7627265117073901 1.8397257139030672
-  position 2.7897445280048707 -28.03803202277304 48.86176227723285
+  orientation 0.5947117510732629 -0.23241722952303168 -0.7696103979002697 3.7259117598333247
+  position -3.5987395605982835 -10.552556462030013 16.550811165930455
 }
 Background {
   skyColor [
@@ -30,4 +30,24 @@ DEF RectangularArena RectangleArena {
 DEF Supervisor Robot {
   controller "fire"
   supervisor TRUE
+}
+Charger {
+  translation -10 -10 0.1
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        metalness 0
+        emissiveColor 0 0.75 0
+      }
+      geometry Cylinder {
+        height 1
+        radius 0.05
+      }
+    }
+  ]
+  battery [
+    50, 100, 15
+  ]
+  radius 1
 }

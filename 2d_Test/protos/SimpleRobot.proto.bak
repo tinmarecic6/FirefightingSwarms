@@ -4,7 +4,7 @@ PROTO SimpleRobot [
   field SFRotation rotation     0 0 1 0
   field SFString   name         "MyRobot"
   field SFString   controller   "RobotController"
-  field MFFloat    battery      [100, 100, 100]
+  field MFFloat    battery      [100]
   field SFString   customData   "10,10"
 ]
 {
