@@ -47,20 +47,23 @@ def HandleLight(left, right):
 def getRobotBearing():
     north = compass.getValues()
     rad = math.atan2(north[1], north[0])
-    return math.degrees(rad)
+    angle = math.degrees(rad)+90
+    if angle >180:
+        angle -= 360
+    return angle
 
 def getAngle(point1, point2):
     delta_x = point2[0] - point1[0]
     delta_y = point2[1] - point1[1]
     angle_radians = math.atan2(delta_y, delta_x)
-    angle_degrees = math.degrees(angle_radians)
+    angle_degrees = math.degrees(angle_radians)*-1
     return angle_degrees
 
 def FindChargingStation():
     #print(getRobotBearing())
     #print(gps.getValues(),charger)
-    print(getAngle(gps.getValues(),charger),getRobotBearing())
-    angleCharging = getAngle(gps.getValues(),charger)+180
+    print(getAngle(charger,gps.getValues()),getRobotBearing())
+    angleCharging = getAngle(charger,gps.getValues())+180
     angleRobot = (getRobotBearing()+180)%360
     print(angleCharging,angleRobot)
     angleDifference = angleCharging - angleRobot
