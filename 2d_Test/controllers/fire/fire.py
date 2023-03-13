@@ -219,7 +219,7 @@ def gen_swarm():
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	for _ in range(1):
 		robot_id,x,y = get_random_robot_locations()
-		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 }')
+		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+str(charging_station_location[0])+','+str(charging_station_location[1])+','+str(charging_station_location[2])+'"}')
 			
 
 

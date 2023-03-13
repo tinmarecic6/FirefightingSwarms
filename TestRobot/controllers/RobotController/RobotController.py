@@ -1,4 +1,5 @@
 from controller import Robot
+import math
 
 TIME_STEP = 64
 robot = Robot()
@@ -43,10 +44,17 @@ def HandleLight(left, right):
     wheels[2].setVelocity(leftSpeed)
     wheels[3].setVelocity(rightSpeed)
 
+def getRobotBearing():
+    north = compass.getValues()
+    rad = math.atan2(north[1], north[0])
+    return math.degrees(rad)
+
+
 def FindChargingStation():
-    print(int(charger[0]))
-    print(gps.getValues())
+    #print(int(charger[0]))
+    #print(gps.getValues())
     print(compass.getValues())
+    print(getRobotBearing())
 
 
 

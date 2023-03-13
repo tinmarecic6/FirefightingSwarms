@@ -4,7 +4,7 @@ from controller import Robot
 TIME_STEP = 64
 robot = Robot()
 robot.batterySensorEnable(TIME_STEP)
-charger = robot.getCustomData().split(',')
+charger = list(map(float, robot.getCustomData().split(',')))
 gps = robot.getDevice('gps')
 gps.enable(TIME_STEP)
 compass = robot.getDevice('compass')
@@ -47,26 +47,46 @@ def HandleLight(left, right):
 def getRobotBearing():
     north = compass.getValues()
     rad = math.atan2(north[1], north[0])
-    bearing = (rad - 1.5708) / math.pi * 180.0
-    if (bearing < 0.0):
-        bearing = bearing + 360.0
-    return bearing
+    return math.degrees(rad)
 
-def cartesianConvertCompassBearingToHeading(heading):
-    heading = 360-heading
-    if (heading > 360.0):
-        heading = heading - 360.0
-    return heading
+def getAngle(point1, point2):
+    delta_x = point2[0] - point1[0]
+    delta_y = point2[1] - point1[1]
+    angle_radians = math.atan2(delta_y, delta_x)
+    angle_degrees = math.degrees(angle_radians)
+    return angle_degrees
 
 def FindChargingStation():
-    print(cartesianConvertCompassBearingToHeading(getRobotBearing()))
+    #print(getRobotBearing())
+    #print(gps.getValues(),charger)
+    print(getAngle(gps.getValues(),charger),getRobotBearing())
+    angleCharging = getAngle(gps.getValues(),charger)+180
+    angleRobot = (getRobotBearing()+180)%360
+    print(angleCharging,angleRobot)
+    angleDifference = angleCharging - angleRobot
+    if angleDifference > 180:
+        angleDifference -=360
+    print(angleDifference)
+    leftSpeed = 0
+    rightSpeed = 0
+    if angleDifference > 0:
+        leftSpeed = -5
+        rightSpeed = 10
+    elif angleDifference < 0:
+        leftSpeed = 10
+        rightSpeed = -5
+    wheels[0].setVelocity(leftSpeed)
+    wheels[1].setVelocity(rightSpeed)
+    wheels[2].setVelocity(leftSpeed)
+    wheels[3].setVelocity(rightSpeed)
+        
     #[int(charger[0]),int(charger[1])]
 
 
 
 while robot.step(TIME_STEP) != -1:
     battery = robot.batterySensorGetValue()
-    if battery != 1:
+    if battery == 1:
         leftSensor = ds[0].getValue()
         rightSensor = ds[1].getValue()
         HandleLight(leftSensor, rightSensor)

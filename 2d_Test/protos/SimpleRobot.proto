@@ -16,14 +16,14 @@ PROTO SimpleRobot [
   battery IS battery
   customData IS customData
   children [
+	DEF Compass Compass {
+	}
+	DEF GPS GPS {
+	}
     DEF LeftSensor LightSensor {
       translation 0.05 0.01 0
       rotation 0 0 1 0.5
       children [
-		DEF Compass Compass {
-		}
-		DEF GPS GPS {
-		}
         DEF LeftSensor Shape {
           appearance PBRAppearance {
             metalness 0
