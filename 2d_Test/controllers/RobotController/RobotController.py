@@ -89,7 +89,7 @@ def FindChargingStation():
 
 while robot.step(TIME_STEP) != -1:
     battery = robot.batterySensorGetValue()
-    if battery == 1:
+    if battery != 1:
         leftSensor = ds[0].getValue()
         rightSensor = ds[1].getValue()
         HandleLight(leftSensor, rightSensor)
