@@ -16,6 +16,7 @@ RectangleArena {
 }
 Robot {
   translation 0 0 0.06
+  scale 3 3 3
   children [
     DEF Compass Compass {
       physics Physics {
@@ -70,8 +71,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.0299806488837355 -0.03005642493018107 5.38730280978415e-05
-        rotation 0.9999998990780374 -0.0003164496287513189 -0.0003189099363084003 1.5665306102373
+        translation -0.030033560280683096 -0.03012142863822498 4.703586901272662e-05
+        rotation 0.9999978879587038 0.001375672738602805 0.0015269586267630066 1.558689156524543
         children [
           DEF Wheel Shape {
             appearance PBRAppearance {
@@ -99,8 +100,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.030043272030408408 0.030056450375241017 -3.7932724371610656e-05
-        rotation 0.9999999973083448 -5.5919947341907304e-05 -4.7500212319500735e-05 1.5664207888151203
+        translation -0.030040349070045082 0.030100960929338783 -0.00010819864305708715
+        rotation 0.9999865094956314 -0.0036846703942624913 -0.00366115157144958 1.5573086451742473
         children [
           DEF Wheel Shape {
             appearance PBRAppearance {
@@ -129,8 +130,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.03004112089923029 0.030056861751560165 3.709153412210834e-05
-        rotation 0.9999999973082745 -5.592062176494124e-05 -4.750089231404967e-05 1.5664207892355815
+        translation 0.030028905409587338 0.030123570992669046 9.761269208599574e-05
+        rotation 0.9999865096945971 -0.003684643193768846 -0.0036611246021045147 1.5573086921322368
         children [
           DEF Wheel Shape {
             appearance PBRAppearance {
@@ -159,8 +160,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.029981908273107226 -0.030056148594381382 -5.2659214498254857e-05
-        rotation 0.9999998990781185 -0.00031644950201531203 -0.00031890980773379086 1.5665306120397007
+        translation 0.030040014680815852 -0.030102525474836828 -3.5678186693654256e-05
+        rotation 0.9999978880259554 0.0013756515839437353 0.0015269336423774976 1.5586892447686007
         children [
           DEF Wheel Shape {
             appearance PBRAppearance {
@@ -209,7 +210,7 @@ Charger {
       appearance PBRAppearance {
         baseColor 0 1 0
         metalness 0
-        emissiveColor 0 0.75 0
+        emissiveColor 0 0.875 0
       }
       geometry Cylinder {
         height 1
