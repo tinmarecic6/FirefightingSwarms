@@ -226,7 +226,8 @@ def gen_swarm():
 
 if __name__ == "__main__":
 	gen_swarm()
-	generateFire(False,2)
+	generateFire(False,1)
+	 
 	
 
 
