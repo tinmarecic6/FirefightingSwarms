@@ -1,0 +1,34 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/balls/protos/Ball.proto"
+IMPORTABLE EXTERNPROTO "../protos/SimpleRobot.proto"
+IMPORTABLE EXTERNPROTO "../protos/ChargingStation.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  fieldOfView 1
+  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
+  position 3.349269797199818e-05 3.349279267177409e-05 68.24856660034693
+}
+Background {
+  skyColor [
+    0.4 0.4 0.8
+    0 0 0
+  ]
+  luminosity 0
+}
+DEF RectangularArena RectangleArena {
+  translation 0 -0.11 0.004548
+  floorSize 30 30
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+}
+DEF Supervisor Robot {
+  controller "fire"
+  supervisor TRUE
+controllerArgs 10 0.001 
+}

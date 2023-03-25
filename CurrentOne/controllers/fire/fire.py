@@ -212,8 +212,9 @@ def simulate_fire(children):
 		passed_time += timestep
 		print(passed_time)
 		if passed_time > simulation_time or not fire_locations:
-			robot.worldSave("../../worlds/test.wbt")
-			robot.simulationQuit(0)
+			pass
+			# robot.worldSave("../../worlds/test.wbt")
+			# robot.simulationQuit(0)
 			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 
 """
@@ -241,9 +242,9 @@ def gen_swarm():
 
 if __name__ == "__main__":
 	print(sys.argv[0])
-	print(sys.argv[1])
+	# print(sys.argv[1])
 	gen_swarm()
-	generateFire(False)
+	generateFire(False,3)
 	 
 	
 
