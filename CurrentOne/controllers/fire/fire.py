@@ -1,10 +1,17 @@
 """fire controller."""
 from controller import Supervisor
-import random,math,numpy
+import random, math, numpy, time, sys
 from collections import Counter
 
+"""
+General variables
+"""
+passed_time = 0
+simulation_time = 10000
+start_time = time.time()
 robot = Supervisor()
 root = robot.getRoot()
+filename = ""
 """
 Fire simulation variables
 """
@@ -34,12 +41,13 @@ max_number_of_fire_nodes = 47
 """
 Robot simulation variables
 """
+
 timestep = int(robot.getBasicTimeStep())
 green_area = (-12,-9)
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
-no_robots = 5
+no_robots = 10
 
 """
 Charging station variables
@@ -184,6 +192,7 @@ def generateFire(random_spread = False,formation_id = 0):
 	simulate_fire(children)
 
 def simulate_fire(children):
+	global passed_time
 	while robot.step(timestep) != -1:
 		if double_check(fire_locations):
 			print("Fires generated on the same location!")
@@ -200,6 +209,13 @@ def simulate_fire(children):
 		for bot_id in robots.keys():
 			reduceFire(robot_name_constant+str(bot_id))
 		handle_fire_changes()
+		passed_time += timestep
+		print(passed_time)
+		if passed_time > simulation_time or not fire_locations:
+			pass
+			# robot.worldSave("../../worlds/test.wbt")
+			# robot.simulationQuit(0)
+			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 
 """
 Robot functions
@@ -225,8 +241,10 @@ def gen_swarm():
 
 
 if __name__ == "__main__":
+	print(sys.argv[0])
+	# print(sys.argv[1])
 	gen_swarm()
-	generateFire(False,1)
+	generateFire(False,3)
 	 
 	
 
