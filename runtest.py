@@ -16,11 +16,11 @@ def modify_world_file(filename="CurrentOne/worlds/CurrentOne.wbt",args_to_add="n
 	with open(filename,"w") as f:
 		f.writelines(lines)
 
-def runSim(no_robots,light_spawn_chance,formation):
-	args = f"{no_robots} {light_spawn_chance} {formation}"
+def runSim(key,no_robots,light_spawn_chance,formation):
+	args = f"{key} {no_robots} {light_spawn_chance} {formation}"
 	modify_args_file(args_to_add=args)
 	print(f"{controllerArgs} set to:\nnumber of robots = {no_robots}\nchance of light spawning = {light_spawn_chance}\nforamtion id = {formation}")
-	os.system("call webots --mode=fast --no-rendering --stdout --stderr CurrentOne/worlds/CurrentOne.wbt")
+	os.system("call webots --mode=fast --minimize --no-rendering --stdout --stderr CurrentOne/worlds/CurrentOne.wbt")
 
 
 if __name__ == "__main__":
@@ -30,10 +30,10 @@ if __name__ == "__main__":
 		# 2:[10,0.001,3],
 		# 3:[10,0.001,4],
 		# 4:[10,0.001,5],
-		# 5:[10,0.001,6],
-		# 6:[10,0.001,7],
-		# 7:[10,0.005,1],
-		# 8:[10,0.005,2],
+		5:[10,0.001,6],
+		6:[10,0.001,7],
+		7:[10,0.005,1],
+		8:[10,0.005,2],
 		9:[10,0.005,3],
 		# 10:[10,0.005,4],
 		# 11:[10,0.005,5],
@@ -47,6 +47,7 @@ if __name__ == "__main__":
 		# 19:[10,0.01,6],
 		# 20:[10,0.01,7]
 		}
-	for item in arguments.values():	
-		runSim(item[0],item[1],item[2])		
+	for item in arguments.items():	
+		# print(item[0],item[1][0],item[1][1],item[1][2])
+		runSim(item[0],item[1][0],item[1][1],item[1][2])		
 	

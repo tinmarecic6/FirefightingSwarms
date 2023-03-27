@@ -1,12 +1,13 @@
 """fire controller."""
 from controller import Supervisor
-import random, math, numpy, time, sys,datetime
+import random, math, numpy, time,os, sys, datetime
 from collections import Counter
 
 """
 General variables
 """
-cur_datetime = datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
+cur_datetime = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+cur_date= datetime.datetime.now().strftime("%d-%m-%Y")
 passed_time = 0
 simulation_time = 100000000
 start_time = time.time()
@@ -96,6 +97,17 @@ def readArgs():
 		arguments = lines[0].split(" ")
 		return arguments
 
+def check_for_folder(foldername):
+	if os.path.exists(f"./runs/{foldername}"):
+		return True
+	else:
+		os.mkdir(f"./runs/{foldername}")
+
+def save_and_exit():
+	check_for_folder(f"{cur_date}")
+	file_to_save = f"./runs/{cur_date}/run-{cur_datetime}-{run_id}.wbt"
+	robot.worldSave(file_to_save)
+	robot.simulationQuit(0)
 
 """
 Fire functions
@@ -234,11 +246,8 @@ def simulate_fire(children):
 		handle_fire_changes()
 		passed_time += timestep
 		if passed_time > simulation_time or not fire_locations:
-			file_to_save = f"/worlds/test_{cur_datetime}-{no_robots}-{formation}.wbt"
-			print(file_to_save)
-			robot.worldSave(file_to_save)
-			# robot.simulationQuit(0)
-			robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
+			save_and_exit()
+			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 
 """
 Robot functions
@@ -265,10 +274,10 @@ def gen_swarm(no_robots):
 
 if __name__ == "__main__":
 	arguments = readArgs()
-	no_robots = int(arguments[0])
-	light_gen_chance = float(arguments[1])
-	formation = int(arguments[2])
-	print(no_robots,light_gen_chance,formation)
+	run_id = int(arguments[0])
+	no_robots = int(arguments[1])
+	light_gen_chance = float(arguments[2])
+	formation = int(arguments[3])
 	gen_swarm(no_robots=no_robots)
 	generateFire(False,formation_id=formation)
 	 
