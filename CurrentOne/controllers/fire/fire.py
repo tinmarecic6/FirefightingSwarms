@@ -34,7 +34,7 @@ light_intensity_increment = 0.01
 light_intensity_decrement = 0.001
 light_max = 2
 light_threshold = 1
-light_gen_chance = 0.001
+light_gen_chance = 0.01
 num_fires = 0
 max_number_of_fire_nodes = 47
 
@@ -196,21 +196,33 @@ def simulate_fire(children):
 	while robot.step(timestep) != -1:
 		if double_check(fire_locations):
 			print("Fires generated on the same location!")
-		for key in list(fire_locations):
-			temp_light_node = robot.getFromDef("PointLight"+str(key))
-			temp_light_intensity_field = temp_light_node.getField("intensity")
-			temp_light_intensity = temp_light_intensity_field.getSFFloat()
-			if temp_light_intensity > light_threshold:
-				cur_chance = numpy.random.uniform()
+		if len(fire_locations) != 0:
+			for cur_chance in [numpy.random.uniform() for _ in range(int(len(fire_locations)/5+4))]:
 				if cur_chance <= light_gen_chance and len(fire_locations) < max_number_of_fire_nodes:
-					id,new_x,new_y = get_random_adjecent_location(key)
-					children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
+					key = list(fire_locations)[0]
+					if len(fire_locations) != 1:
+						key = list(fire_locations)[random.randrange(0,len(fire_locations)-1)]
+					temp_light_node = robot.getFromDef("PointLight"+str(key))
+					temp_light_intensity_field = temp_light_node.getField("intensity")
+					temp_light_intensity = temp_light_intensity_field.getSFFloat()
+					if temp_light_intensity > light_threshold:
+						id,new_x,new_y = get_random_adjecent_location(key)
+						children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
+
+		# for key in list(fire_locations):
+		# 	temp_light_node = robot.getFromDef("PointLight"+str(key))
+		# 	temp_light_intensity_field = temp_light_node.getField("intensity")
+		# 	temp_light_intensity = temp_light_intensity_field.getSFFloat()
+		# 	if temp_light_intensity > light_threshold:
+		# 		cur_chance = numpy.random.uniform()
+		# 		if cur_chance <= light_gen_chance and len(fire_locations) < max_number_of_fire_nodes:
+		# 			id,new_x,new_y = get_random_adjecent_location(key)
+		# 			children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
 		add_fire_changes()
 		for bot_id in robots.keys():
 			reduceFire(robot_name_constant+str(bot_id))
 		handle_fire_changes()
 		passed_time += timestep
-		print(passed_time)
 		if passed_time > simulation_time or not fire_locations:
 			pass
 			# robot.worldSave("../../worlds/test.wbt")
