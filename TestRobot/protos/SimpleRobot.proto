@@ -16,7 +16,37 @@ PROTO SimpleRobot [
   battery IS battery
   customData IS customData
   scale 3 3 3
-  children [
+children [
+    DEF LeftSensorDistance DistanceSensor {
+      translation 0.05 0.01 0
+      rotation 0 0 1 0.5
+      children [
+        DEF LeftSensor Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "LeftSensorDistance"
+    }
+    DEF RightSensorDistance DistanceSensor {
+      translation 0.05 -0.01 0
+      rotation 0 0 1 -0.5
+      children [
+        DEF RightSensor Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "RightSensorDistance"
+    }
     DEF Compass Compass {
       physics Physics {
       }

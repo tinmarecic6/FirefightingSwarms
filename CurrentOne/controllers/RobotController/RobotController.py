@@ -9,8 +9,13 @@ gps = robot.getDevice('gps')
 gps.enable(TIME_STEP)
 compass = robot.getDevice('compass')
 compass.enable(TIME_STEP)
+ls = []
+lsNames = ['LeftSensor', 'RightSensor']
+for i in range(2):
+    ls.append(robot.getDevice(lsNames[i]))
+    ls[i].enable(TIME_STEP)
 ds = []
-dsNames = ['LeftSensor', 'RightSensor']
+dsNames = ['LeftSensorDistance', 'RightSensorDistance']
 for i in range(2):
     ds.append(robot.getDevice(dsNames[i]))
     ds[i].enable(TIME_STEP)
@@ -90,8 +95,11 @@ def FindChargingStation():
 while robot.step(TIME_STEP) != -1:
     battery = robot.batterySensorGetValue()
     if battery != 1:
-        leftSensor = ds[0].getValue()
-        rightSensor = ds[1].getValue()
+        leftSensor = ls[0].getValue()
+        rightSensor = ls[1].getValue()
+        leftSensorDistance = ds[0].getValue()
+        rightSensorDistance = ds[1].getValue()
+        print(leftSensorDistance,rightSensorDistance)
         HandleLight(leftSensor, rightSensor)
     else:
         FindChargingStation()

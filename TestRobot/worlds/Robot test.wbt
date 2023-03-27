@@ -7,7 +7,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.42818157915330984 0.1317319901412587 0.8940398302353207 2.6047638681071916
-  position 0.3009437152044847 -0.20933689555144241 0.5025564863048684
+  position 2.263934636610368 -1.5434322604994648 3.452631492782951
 }
 TexturedBackground {
 }
@@ -18,6 +18,36 @@ Robot {
   translation 0 0 0.06
   scale 3 3 3
   children [
+    DEF LeftSensorDistance DistanceSensor {
+      translation 0.05 0.01 0
+      rotation 0 0 1 0.5
+      children [
+        DEF LeftSensor Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "LeftSensorDistance"
+    }
+    DEF RightSensorDistance DistanceSensor {
+      translation 0.05 -0.01 0
+      rotation 0 0 1 -0.5
+      children [
+        DEF RightSensor Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "RightSensorDistance"
+    }
     DEF Compass Compass {
       physics Physics {
       }
@@ -210,7 +240,7 @@ Charger {
       appearance PBRAppearance {
         baseColor 0 1 0
         metalness 0
-        emissiveColor 0 0.875 0
+        emissiveColor 0 0.9375 0
       }
       geometry Cylinder {
         height 1
