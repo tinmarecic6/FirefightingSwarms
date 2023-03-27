@@ -1,19 +1,24 @@
 import sys,os
 controllerArgs = "controllerArgs"
 
+def modify_args_file(filename="CurrentOne/Controllers/fire/args.txt",args_to_add="none"):
+	with open(file=filename,mode="w") as f:
+			f.write(args_to_add)
+		
+
 def modify_world_file(filename="CurrentOne/worlds/CurrentOne.wbt",args_to_add="none"):
 	with open(file=filename,mode="r+") as f:
 		lines = f.readlines()
 		for line in lines:
 			if controllerArgs in line:
-				newArgs = controllerArgs +" "+ args_to_add +" \n"
+				newArgs = controllerArgs +" "+ args_to_add +"\n"
 				lines[lines.index(line)] = newArgs
 	with open(filename,"w") as f:
 		f.writelines(lines)
 
 def runSim(no_robots,light_spawn_chance,formation):
-	args = f"  {no_robots} {light_spawn_chance} {formation}"
-	# modify_world_file(args_to_add=args)
+	args = f"{no_robots} {light_spawn_chance} {formation}"
+	modify_args_file(args_to_add=args)
 	print(f"{controllerArgs} set to:\nnumber of robots = {no_robots}\nchance of light spawning = {light_spawn_chance}\nforamtion id = {formation}")
 	os.system("call webots --mode=fast --no-rendering --stdout --stderr CurrentOne/worlds/CurrentOne.wbt")
 
