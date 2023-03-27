@@ -9,7 +9,7 @@ General variables
 cur_datetime = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 cur_date= datetime.datetime.now().strftime("%d-%m-%Y")
 passed_time = 0
-simulation_time = 10000
+simulation_time = 100000000
 start_time = time.time()
 robot = Supervisor()
 root = robot.getRoot()

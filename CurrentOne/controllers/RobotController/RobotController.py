@@ -44,10 +44,7 @@ def HandleLight(left, right):
     elif (right>left):
         leftSpeed = 5
         rightSpeed = 10
-    wheels[0].setVelocity(leftSpeed)
-    wheels[1].setVelocity(rightSpeed)
-    wheels[2].setVelocity(leftSpeed)
-    wheels[3].setVelocity(rightSpeed)
+    setSpeed(leftSpeed,rightSpeed)
 
 def getRobotBearing():
     north = compass.getValues()
@@ -83,23 +80,30 @@ def FindChargingStation():
     elif angleDifference < -10:
         leftSpeed = 10
         rightSpeed = -5
-    wheels[0].setVelocity(leftSpeed)
-    wheels[1].setVelocity(rightSpeed)
-    wheels[2].setVelocity(leftSpeed)
-    wheels[3].setVelocity(rightSpeed)
+    setSpeed(leftSpeed,rightSpeed)
         
     #[int(charger[0]),int(charger[1])]
 
-
+def setSpeed(left,right):
+    leftSensorDistance = ds[0].getValue()
+    rightSensorDistance = ds[1].getValue()
+    if leftSensorDistance > rightSensorDistance:
+        left = 10
+        right = -5
+    if rightSensorDistance > leftSensorDistance:
+        left = -5
+        right = 10
+    wheels[0].setVelocity(left)
+    wheels[1].setVelocity(right)
+    wheels[2].setVelocity(left)
+    wheels[3].setVelocity(right)
 
 while robot.step(TIME_STEP) != -1:
     battery = robot.batterySensorGetValue()
     if battery != 1:
         leftSensor = ls[0].getValue()
         rightSensor = ls[1].getValue()
-        leftSensorDistance = ds[0].getValue()
-        rightSensorDistance = ds[1].getValue()
-        print(leftSensorDistance,rightSensorDistance)
+        #print(leftSensorDistance,rightSensorDistance)
         HandleLight(leftSensor, rightSensor)
     else:
         FindChargingStation()
