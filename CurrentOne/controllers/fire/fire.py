@@ -1,11 +1,12 @@
 """fire controller."""
 from controller import Supervisor
-import random, math, numpy, time, sys
+import random, math, numpy, time, sys,datetime
 from collections import Counter
 
 """
 General variables
 """
+cur_datetime = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 passed_time = 0
 simulation_time = 10000
 start_time = time.time()
@@ -47,7 +48,9 @@ green_area = (-12,-9)
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
-no_robots = 10
+
+
+# no_robots = 10
 
 """
 Charging station variables
@@ -86,6 +89,15 @@ def in_arena(x,y,floor_size):
 	if -a/2 <= x <= a/2 and -b/2 <= y <= b/2:
 		return True
 	return False
+
+def readArgs():	
+	with open("C:/Users/tinma/Documents/ITU/Thesis/Simulations/CurrentOne/worlds/CurrentOne.wbt","r") as f:
+		lines = f.readlines()
+		for line in lines:
+			if "controllerArgs" in line:
+				_, arguments = line.split("   ")
+				return arguments.split(" ")
+
 
 """
 Fire functions
@@ -210,11 +222,10 @@ def simulate_fire(children):
 			reduceFire(robot_name_constant+str(bot_id))
 		handle_fire_changes()
 		passed_time += timestep
-		print(passed_time)
 		if passed_time > simulation_time or not fire_locations:
 			pass
-			# robot.worldSave("../../worlds/test.wbt")
-			# robot.simulationQuit(0)
+			robot.worldSave(f"../../worlds/test{cur_datetime}-{no_robots}-{formation}.wbt")
+			robot.simulationQuit(0)
 			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 
 """
@@ -231,7 +242,7 @@ def get_random_robot_locations():
 	return robot_id,x,y
 
 
-def gen_swarm():
+def gen_swarm(no_robots):
 	children = root.getField('children')
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	for _ in range(no_robots):
@@ -241,10 +252,13 @@ def gen_swarm():
 
 
 if __name__ == "__main__":
-	print(sys.argv[0])
-	# print(sys.argv[1])
-	gen_swarm()
-	generateFire(False,3)
+	arguments = readArgs()
+	no_robots = int(arguments[0])
+	light_spawn_chance = float(arguments[1])
+	formation = int(arguments[2])
+	# print(cur_datetime)
+	gen_swarm(no_robots=no_robots)
+	generateFire(False,formation_id=formation)
 	 
 	
 

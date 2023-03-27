@@ -5,6 +5,6 @@ sceneTreePerspectives: 000000ff00000001000000030000001e000001b3000000fa010000000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 0 "controllers/RobotController/RobotController.py"
+textFiles: 0 "../TestRobot/controllers/RobotController/RobotController.py"
 globalOptionalRendering: DistanceSensorRays::LightSensorRays::CoordinateSystem
 consoles: Console:All:All
