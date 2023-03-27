@@ -50,9 +50,6 @@ light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
 
-
-# no_robots = 10
-
 """
 Charging station variables
 """
