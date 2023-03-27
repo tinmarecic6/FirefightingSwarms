@@ -4,7 +4,7 @@ PROTO SimpleRobot [
   field SFRotation rotation     0 0 1 0
   field SFString   name         "MyRobot"
   field SFString   controller   "RobotController"
-  field MFFloat    battery      [100]
+  field MFFloat    battery      [100, 100, 100]
   field SFString   customData   "10,10"
 ]
 {
@@ -15,7 +15,14 @@ PROTO SimpleRobot [
   controller IS controller
   battery IS battery
   customData IS customData
+  scale 3 3 3
   children [
+    DEF Compass Compass {
+      physics Physics {
+      }
+    }
+    DEF GPS GPS {
+    }
     DEF LeftSensor LightSensor {
       translation 0.05 0.01 0
       rotation 0 0 1 0.5
@@ -63,8 +70,8 @@ PROTO SimpleRobot [
         }
       ]
       endPoint Solid {
-        translation -0.03 -0.03 0
-        rotation 1 0 0 1.57
+        translation -0.030033560280683096 -0.03012142863822498 4.703586901272662e-05
+        rotation 0.9999978879587038 0.001375672738602805 0.0015269586267630066 1.558689156524543
         children [
           DEF Wheel Shape {
             appearance PBRAppearance {
@@ -92,8 +99,8 @@ PROTO SimpleRobot [
         }
       ]
       endPoint Solid {
-        translation -0.03 0.03 0
-        rotation 1 0 0 1.57
+        translation -0.030040349070045082 0.030100960929338783 -0.00010819864305708715
+        rotation 0.9999865094956314 -0.0036846703942624913 -0.00366115157144958 1.5573086451742473
         children [
           DEF Wheel Shape {
             appearance PBRAppearance {
@@ -122,8 +129,8 @@ PROTO SimpleRobot [
         }
       ]
       endPoint Solid {
-        translation 0.03 0.03 0
-        rotation 1 0 0 1.57
+        translation 0.030028905409587338 0.030123570992669046 9.761269208599574e-05
+        rotation 0.9999865096945971 -0.003684643193768846 -0.0036611246021045147 1.5573086921322368
         children [
           DEF Wheel Shape {
             appearance PBRAppearance {
@@ -152,8 +159,8 @@ PROTO SimpleRobot [
         }
       ]
       endPoint Solid {
-        translation 0.03 -0.03 0
-        rotation 1 0 0 1.57
+        translation 0.030040014680815852 -0.030102525474836828 -3.5678186693654256e-05
+        rotation 0.9999978880259554 0.0013756515839437353 0.0015269336423774976 1.5586892447686007
         children [
           DEF Wheel Shape {
             appearance PBRAppearance {

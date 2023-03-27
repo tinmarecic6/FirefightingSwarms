@@ -15,6 +15,7 @@ PROTO SimpleRobot [
   controller IS controller
   battery IS battery
   customData IS customData
+  scale 3 3 3
   children [
 	DEF Compass Compass {
 	}
