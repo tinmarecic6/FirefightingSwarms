@@ -21,13 +21,14 @@ Robot {
     DEF LeftSensorDistance DistanceSensor {
       translation 0.05 0.01 0
       rotation 0 0 1 0.5
+      scale 5 5 5
       children [
         DEF LeftSensor Shape {
           appearance PBRAppearance {
             metalness 0
           }
           geometry Box {
-            size 0.01 0.01 0.01
+            size 0.002 0.002 0.002
           }
         }
       ]
@@ -36,13 +37,14 @@ Robot {
     DEF RightSensorDistance DistanceSensor {
       translation 0.05 -0.01 0
       rotation 0 0 1 -0.5
+      scale 5 5 5
       children [
         DEF RightSensor Shape {
           appearance PBRAppearance {
             metalness 0
           }
           geometry Box {
-            size 0.01 0.01 0.01
+            size 0.002 0.002 0.002
           }
         }
       ]
