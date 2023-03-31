@@ -1,4 +1,1 @@
-Report writing
-Collision avoidance 
-Communication between robots?
-Put sensors on robots
+Add maunal/automatic testing to the args

@@ -1,6 +1,6 @@
 """fire controller."""
 from controller import Supervisor
-import random, math, numpy, time,os, sys, datetime
+import random, math, numpy, time,os, sys, datetime,csv
 from collections import Counter
 
 """
@@ -13,12 +13,11 @@ simulation_time = 100000000
 start_time = time.time()
 robot = Supervisor()
 root = robot.getRoot()
-filename = ""
+csv_header = ["runID","no_robots","light_generation_chance","formation","time_passed","timestep"]
+
 """
 Fire simulation variables
 """
-no_lights = 5
-fire_square = (0,5)
 fire_squares = {
 	1:[(9,9),(10,10),(11,11),(12,12),(13,13),(14,14)], #line 
 	2:[(10,10),(0,-10),(-10,10),(0,10),(4,-5),(7,4)], #spread out
@@ -28,6 +27,8 @@ fire_squares = {
 	6:[(-13,4),(-3,3),(7,7),(1,-4),(1,-10)], #arch a bit further out with a single point behind
 	7:[(12,12),(-12,12),(12,-12),(10,0),(0,10)] #very spread  out
 }
+no_lights = 5
+fire_square = (0,5)
 fire_locations = {}
 fire_changes = {}
 fire_changes2 = {}
@@ -105,6 +106,24 @@ def save_and_exit():
 	file_to_save = f"./runs/{cur_date}/run-{cur_datetime}-{run_id}.wbt"
 	robot.worldSave(file_to_save)
 	robot.simulationQuit(0)
+#This method does not save data as expected, needs a fix
+def save_results(filename="AllRunResults.csv",no_robots=0,light_gen_chance=0,formation=0,passed_time=0,timestep=timestep):
+	max_run_id = 0
+	if os.path.isfile("./"+filename):
+		with open(filename,"r") as read:
+			reader = csv.reader(read)
+			for row in reader:
+				max_run_id = row[0]
+		with open(filename,"w") as write:
+			writer = csv.writer(write,)
+			writer.writerow([max_run_id,no_robots,light_gen_chance,formation,passed_time,timestep])
+	else:
+		with open(filename,"w") as write:
+			writer = csv.writer(write)
+			writer.writerow(csv_header)
+			writer.writerow([max_run_id,no_robots,light_gen_chance,formation,passed_time,timestep])
+
+
 
 """
 Fire functions
@@ -243,6 +262,7 @@ def simulate_fire(children):
 		handle_fire_changes()
 		passed_time += timestep
 		if passed_time > simulation_time or not fire_locations:
+			save_results(no_robots=no_robots,light_gen_chance=light_gen_chance,formation=formation,passed_time=passed_time,timestep=timestep)
 			save_and_exit()
 			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 
