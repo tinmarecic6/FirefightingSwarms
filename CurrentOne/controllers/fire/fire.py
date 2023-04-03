@@ -1,6 +1,7 @@
 """fire controller."""
 from controller import Supervisor
-import random, math, numpy, time,os, sys, datetime,csv
+import random, math, numpy, time,os, sys, datetime
+import pandas as pd
 from collections import Counter
 
 """
@@ -9,7 +10,7 @@ General variables
 cur_datetime = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 cur_date= datetime.datetime.now().strftime("%d-%m-%Y")
 passed_time = 0
-simulation_time = 100000000
+simulation_time = 600000
 start_time = time.time()
 robot = Supervisor()
 root = robot.getRoot()
@@ -106,23 +107,27 @@ def save_and_exit():
 	file_to_save = f"./runs/{cur_date}/run-{cur_datetime}-{run_id}.wbt"
 	robot.worldSave(file_to_save)
 	robot.simulationQuit(0)
-#This method does not save data as expected, needs a fix
-def save_results(filename="AllRunResults.csv",no_robots=0,light_gen_chance=0,formation=0,passed_time=0,timestep=timestep):
-	max_run_id = 0
-	if os.path.isfile("./"+filename):
-		with open(filename,"r") as read:
-			reader = csv.reader(read)
-			for row in reader:
-				max_run_id = row[0]
-		with open(filename,"w") as write:
-			writer = csv.writer(write,)
-			writer.writerow([max_run_id,no_robots,light_gen_chance,formation,passed_time,timestep])
-	else:
-		with open(filename,"w") as write:
-			writer = csv.writer(write)
-			writer.writerow(csv_header)
-			writer.writerow([max_run_id,no_robots,light_gen_chance,formation,passed_time,timestep])
 
+
+#"runID","no_robots","light_generation_chance","formation","time_passed","timestep"
+def save_results(filename="AllRunResults.csv",no_robots=0,light_gen_chance=0,formation=0,passed_time=0,timestep=timestep):
+	max_index = 0
+	if os.path.isfile(filename):
+		df = pd.read_csv(filename)
+		max_index = df['runID'].max() + 1
+	else:
+		df = pd.DataFrame(columns = csv_header)
+	data = {
+		'runID' : int(max_index),
+		'no_robots':int(no_robots),
+		'light_generation_chance':light_gen_chance,
+		'formation':int(formation),
+		'time_passed':int(passed_time),
+		'timestep':int(timestep)
+	  	}
+	df.loc[len(df.index)] = data
+	# print(df.dtypes)
+	df.to_csv(filename,index = False)
 
 
 """
@@ -263,8 +268,9 @@ def simulate_fire(children):
 		passed_time += timestep
 		if passed_time > simulation_time or not fire_locations:
 			save_results(no_robots=no_robots,light_gen_chance=light_gen_chance,formation=formation,passed_time=passed_time,timestep=timestep)
-			save_and_exit()
-			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
+			# save_and_exit()
+			robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
+			break
 
 """
 Robot functions
