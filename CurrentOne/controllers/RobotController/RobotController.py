@@ -87,9 +87,14 @@ def FindChargingStation():
 def setSpeed(left,right):
     leftSensorDistance = ds[0].getValue()
     rightSensorDistance = ds[1].getValue()
-    if leftSensorDistance != 1000 and rightSensorDistance != 1000:
+    print("left: ",leftSensorDistance," right: ",rightSensorDistance)
+    if leftSensorDistance > rightSensorDistance:
         left = 10
         right = -5
+    elif leftSensorDistance < rightSensorDistance:
+        left = -5
+        right = 10
+    print("left: ",left," right: ",right)
     wheels[0].setVelocity(left)
     wheels[1].setVelocity(right)
     wheels[2].setVelocity(left)
