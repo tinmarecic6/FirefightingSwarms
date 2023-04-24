@@ -1,0 +1,4 @@
+CurrentRun=1
+Light=0.001
+Formation=1
+Robots=1
