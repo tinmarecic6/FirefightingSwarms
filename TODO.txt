@@ -1,3 +1,4 @@
 Rewrite the testing section 
 Modify the formation pictures
 Add the table to the testing section
+Fix the group assigment in the json

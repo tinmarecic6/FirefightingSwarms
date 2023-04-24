@@ -48,8 +48,9 @@ Robot simulation variables
 
 timestep = int(robot.getBasicTimeStep())
 green_area = (-12,-9)
-center_of_arena = -10.5
-leader_locations = [(-11,-9.2),(-9.2,-9.2),(-9.2,-11)]
+center_of_arena = -9
+group_quadrants = [(-12,-7,-center_of_arena,-center_of_arena),(-7,-7,-center_of_arena,-center_of_arena),(-7,-12,-center_of_arena,-center_of_arena)]
+leader_locations = [(-12,-7.2),(-7.2,-7.2),(-7.2,-12)]
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
@@ -283,17 +284,47 @@ def get_random_robot_locations():
 	robots.update({robot_id:(x,y)})
 	return robot_id,x,y
 
-def get_robot_quadrants():
+
+
+def get_robot_quadrants(id):
+	group = id%3
+	if group_quadrants[group][0] < center_of_arena:
+		x = random.uniform(group_quadrants[group][0],center_of_arena)
+	else:
+		x = random.uniform(center_of_arena,group_quadrants[group][0])
+	if group_quadrants[group][1] < center_of_arena:
+		y = random.uniform(group_quadrants[group][1],center_of_arena)
+	else:
+		y = random.uniform(center_of_arena,group_quadrants[group][1])
+	print(x,y)
+	while (x,y) in robots.values() and in_arena(x,y,get_floor_size(robot)):
+		if group_quadrants[group][0] < center_of_arena:
+			x = random.uniform(group_quadrants[group][0],center_of_arena)
+		else:
+			x = random.uniform(center_of_arena,group_quadrants[group][0])
+		if group_quadrants[group][1] < center_of_arena:
+			y = random.uniform(group_quadrants[group][1],center_of_arena)
+		else:
+			y = random.uniform(center_of_arena,group_quadrants[group][1])
+	robot_id = max(robots) + 1 if robots else 1
+	robots.update({robot_id:(x,y)})
+	return group,robot_id,x,y
+
+
 
 
 def gen_swarm(no_robots):
 	children = root.getField('children')
 	FollowerJson = """{'charger': [-10,-10,0.1], 'leader' : False,'RelativeLocation' : [0,0], 'Group' : 1, 'Orders' : 'Follow'}"""
-	LeaderJson = """{'charger': [-10,-10,0.1], 'leader' : True, 'Group' : 1, 'Orders' : "Follow"}"""
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	print(json.dumps(FollowerJson))
-	for _ in range(no_robots):
-		robot_id,x,y = get_random_robot_locations()
+	for leader_location in enumerate(leader_locations):
+		LeaderJson = """{'charger': [-10,-10,0.1], 'leader' : True, 'Group' : '1', 'Orders' : "Follow"}"""
+		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
+		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
+		robots.update({robot_id:(x,y)})
+	for id in range(no_robots-len(leader_locations)):
+		group_id,robot_id,x,y = get_robot_quadrants(id)
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+FollowerJson+'"}')
 			
 
