@@ -14,7 +14,7 @@ simulation_time = 600000
 start_time = time.time()
 robot = Supervisor()
 root = robot.getRoot()
-csv_header = ["runID","no_robots","light_generation_chance","formation","time_passed","timestep"]
+csv_header = ["runID","datetime","algorithm","no_robots","light_generation_chance","formation","time_passed","timestep"]
 
 """
 Fire simulation variables
@@ -103,15 +103,18 @@ def check_for_folder(foldername):
 		os.mkdir(f"./runs/{foldername}")
 
 def save_and_exit():
+	print("Running  save and exit")
 	check_for_folder(f"{cur_date}")
 	file_to_save = f"./runs/{cur_date}/run-{cur_datetime}-{run_id}.wbt"
+	robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 	robot.worldSave(file_to_save)
 	robot.simulationQuit(0)
 
 
-#"runID","no_robots","light_generation_chance","formation","time_passed","timestep"
-def save_results(filename="AllRunResults.csv",no_robots=0,light_gen_chance=0,formation=0,passed_time=0,timestep=timestep):
+def save_results(filename="AllRunResults.csv",datetime=0,no_robots=0,light_gen_chance=0,formation=0,passed_time=0,timestep=timestep):
+	os.chdir("../../../")
 	max_index = 0
+	datetime = cur_datetime
 	if os.path.isfile(filename):
 		df = pd.read_csv(filename)
 		max_index = df['runID'].max() + 1
@@ -119,6 +122,8 @@ def save_results(filename="AllRunResults.csv",no_robots=0,light_gen_chance=0,for
 		df = pd.DataFrame(columns = csv_header)
 	data = {
 		'runID' : int(max_index),
+		'datetime': datetime,
+		'algorithm': "CurrentOne",
 		'no_robots':int(no_robots),
 		'light_generation_chance':light_gen_chance,
 		'formation':int(formation),
@@ -126,9 +131,8 @@ def save_results(filename="AllRunResults.csv",no_robots=0,light_gen_chance=0,for
 		'timestep':int(timestep)
 	  	}
 	df.loc[len(df.index)] = data
-	# print(df.dtypes)
 	df.to_csv(filename,index = False)
-
+	os.chdir("CurrentOne/controllers/fire/")
 
 """
 Fire functions
@@ -251,16 +255,6 @@ def simulate_fire(children):
 					if temp_light_intensity > light_threshold:
 						id,new_x,new_y = get_random_adjecent_location(key)
 						children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
-
-		# for key in list(fire_locations):
-		# 	temp_light_node = robot.getFromDef("PointLight"+str(key))
-		# 	temp_light_intensity_field = temp_light_node.getField("intensity")
-		# 	temp_light_intensity = temp_light_intensity_field.getSFFloat()
-		# 	if temp_light_intensity > light_threshold:
-		# 		cur_chance = numpy.random.uniform()
-		# 		if cur_chance <= light_gen_chance and len(fire_locations) < max_number_of_fire_nodes:
-		# 			id,new_x,new_y = get_random_adjecent_location(key)
-		# 			children.importMFNodeFromString(-1,'DEF PointLight'+str(id)+' PointLight { location '+str(new_x)+' '+str(new_y)+' 0.1 attenuation 0 0 5} intensity 0.1')
 		add_fire_changes()
 		for bot_id in robots.keys():
 			reduceFire(robot_name_constant+str(bot_id))
@@ -268,8 +262,8 @@ def simulate_fire(children):
 		passed_time += timestep
 		if passed_time > simulation_time or not fire_locations:
 			save_results(no_robots=no_robots,light_gen_chance=light_gen_chance,formation=formation,passed_time=passed_time,timestep=timestep)
-			# save_and_exit()
-			robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
+			save_and_exit()
+			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 			break
 
 """
@@ -296,6 +290,7 @@ def gen_swarm(no_robots):
 
 
 if __name__ == "__main__":
+	print("Running CurrentOne")
 	arguments = readArgs()
 	run_id = int(arguments[0])
 	no_robots = int(arguments[1])

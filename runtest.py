@@ -1,26 +1,20 @@
 import sys,os
 controllerArgs = "controllerArgs"
 
-def modify_args_file(filename="CurrentOne/Controllers/fire/args.txt",args_to_add="none"):
+simple_algorithm = {"world":"SimpleAlgorithm/worlds/SimpleAlgorithm.wbt","args":"SimpleAlgorithm/controllers/fire/args.txt"}
+current_one = {"world":"CurrentOne/worlds/CurrentOne.wbt","args":"CurrentOne/controllers/fire/args.txt"}
+
+
+def modify_args_file(filename=current_one["args"],args_to_add="none"):
 	with open(file=filename,mode="w") as f:
 			f.write(args_to_add)
 		
 
-def modify_world_file(filename="CurrentOne/worlds/CurrentOne.wbt",args_to_add="none"):
-	with open(file=filename,mode="r+") as f:
-		lines = f.readlines()
-		for line in lines:
-			if controllerArgs in line:
-				newArgs = controllerArgs +" "+ args_to_add +"\n"
-				lines[lines.index(line)] = newArgs
-	with open(filename,"w") as f:
-		f.writelines(lines)
-
-def runSim(key,no_robots,light_spawn_chance,formation):
+def runSim(algorithm,key,no_robots,light_spawn_chance,formation):
 	args = f"{key} {no_robots} {light_spawn_chance} {formation}"
-	modify_args_file(args_to_add=args)
-	print(f"{controllerArgs} set to:\nnumber of robots = {no_robots}\nchance of light spawning = {light_spawn_chance}\nforamtion id = {formation}")
-	os.system("call webots --mode=fast --minimize --no-rendering --stdout --stderr CurrentOne/worlds/CurrentOne.wbt")
+	modify_args_file(filename=algorithm["args"] ,args_to_add=args)
+	print(f"Using algorithm: {algorithm['world']}\n {controllerArgs} set to:\nnumber of robots = {no_robots}\nchance of light spawning = {light_spawn_chance}\nforamtion id = {formation}")
+	os.system("call webots --mode=fast --minimize --no-rendering --stdout "+algorithm["world"])
 
 
 if __name__ == "__main__":
@@ -48,6 +42,5 @@ if __name__ == "__main__":
 		20:[10,0.01,7]
 		}
 	for item in arguments.items():	
-		# print(item[0],item[1][0],item[1][1],item[1][2])
-		runSim(item[0],item[1][0],item[1][1],item[1][2])		
+		runSim(current_one,item[0],item[1][0],item[1][1],item[1][2])		
 	
