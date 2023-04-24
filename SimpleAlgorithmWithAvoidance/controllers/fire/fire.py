@@ -123,7 +123,7 @@ def save_results(filename="AllRunResults.csv",datetime=0,no_robots=0,light_gen_c
 	data = {
 		'runID' : int(max_index),
 		'datetime': datetime,
-		'algorithm': "CurrentOne",
+		'algorithm': "SimpleAlgorithmWihAvoidance",
 		'no_robots':int(no_robots),
 		'light_generation_chance':light_gen_chance,
 		'formation':int(formation),
@@ -132,7 +132,7 @@ def save_results(filename="AllRunResults.csv",datetime=0,no_robots=0,light_gen_c
 	  	}
 	df.loc[len(df.index)] = data
 	df.to_csv(filename,index = False)
-	os.chdir("CurrentOne/controllers/fire/")
+	os.chdir("SimpleAlgorithmWihAvoidance/controllers/fire/")
 
 """
 Fire functions
@@ -290,7 +290,7 @@ def gen_swarm(no_robots):
 
 
 if __name__ == "__main__":
-	print("Running CurrentOne")
+	print("Running SimpleAlgorithmWihAvoidance")
 	arguments = readArgs()
 	run_id = int(arguments[0])
 	no_robots = int(arguments[1])

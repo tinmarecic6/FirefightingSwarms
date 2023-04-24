@@ -20,7 +20,7 @@ csv_header = ["runID","datetime","algorithm","no_robots","light_generation_chanc
 Fire simulation variables
 """
 fire_squares = {
-	1:[(9,9),(10,10),(11,11),(12,12),(13,13),(14,14)], #line 
+	1:[(9,9),(10,10),(11,11),(12,12),(13,13),(14,14)], #line
 	2:[(10,10),(0,-10),(-10,10),(0,10),(4,-5),(7,4)], #spread out
 	3:[(-14,0),(-12,-2),(-8,-6),(-6,-10),(-2,-14)], #arch close
 	4:[(-14,0),(-12,2),(-8,6),(-6,10),(-2,12),(14,-14)], #line closing off adjecent corner
@@ -48,6 +48,8 @@ Robot simulation variables
 
 timestep = int(robot.getBasicTimeStep())
 green_area = (-12,-9)
+center_of_arena = -10.5
+leader_locations = [(-11,-9.2),(-9.2,-9.2),(-9.2,-11)]
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
@@ -90,7 +92,7 @@ def in_arena(x,y,floor_size):
 		return True
 	return False
 
-def readArgs():	
+def readArgs():
 	with open("args.txt","r") as f:
 		lines = f.readlines()
 		arguments = lines[0].split(" ")
@@ -155,13 +157,13 @@ def get_random_fire_location():
 def get_quadrant(x,y,dir_more_less):
 	dist = random.uniform(1,2)
 	if dir_more_less < 0.25:
-		new_x = x-dist 
+		new_x = x-dist
 		new_y = y+dist
 	elif dir_more_less >= 0.25 and dir_more_less < 0.5:
-		new_x = x+dist 
+		new_x = x+dist
 		new_y = y+dist
 	elif dir_more_less >=0.5 and dir_more_less < 0.75:
-		new_x = x-dist 
+		new_x = x-dist
 		new_y = y-dist
 	elif dir_more_less >= 0.75 and dir_more_less <=1:
 		new_x = x+dist
@@ -262,13 +264,15 @@ def simulate_fire(children):
 		passed_time += timestep
 		if passed_time > simulation_time or not fire_locations:
 			save_results(no_robots=no_robots,light_gen_chance=light_gen_chance,formation=formation,passed_time=passed_time,timestep=timestep)
-			save_and_exit()
-			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
+			# save_and_exit()
+			robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 			break
 
 """
 Robot functions
 """
+
+
 def get_random_robot_locations():
 	y = random.randint(green_area[0],green_area[1])
 	x = random.randint(green_area[0],green_area[1])
@@ -279,14 +283,23 @@ def get_random_robot_locations():
 	robots.update({robot_id:(x,y)})
 	return robot_id,x,y
 
+def get_robot_quadrants():
+
 
 def gen_swarm(no_robots):
 	children = root.getField('children')
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
-	for _ in range(no_robots):
+	#generate leaders first
+	for leader_location in enumerate(leader_locations):
+		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
+		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+str(charging_station_location[0])+','+str(charging_station_location[1])+','+str(charging_station_location[2])+'"}')
+		robots.update({robot_id:(x,y)})
+
+	#generate other robots 
+	for _ in range(no_robots-len(leader_locations)):
 		robot_id,x,y = get_random_robot_locations()
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+str(charging_station_location[0])+','+str(charging_station_location[1])+','+str(charging_station_location[2])+'"}')
-			
+
 
 
 if __name__ == "__main__":
@@ -298,7 +311,7 @@ if __name__ == "__main__":
 	formation = int(arguments[3])
 	gen_swarm(no_robots=no_robots)
 	generateFire(False,formation_id=formation)
-	 
-	
+
+
 
 
