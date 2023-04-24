@@ -2,6 +2,7 @@ import sys,os
 controllerArgs = "controllerArgs"
 
 simple_algorithm = {"world":"SimpleAlgorithm/worlds/SimpleAlgorithm.wbt","args":"SimpleAlgorithm/controllers/fire/args.txt"}
+simple_algorithm_with_avoidance = {"world":"SimpleAlgorithmWithAvoidance/worlds/SimpleAlgorithmWithAvoidance.wbt", "args":"SimpleAlgorithmWithAvoidance/controllers/fire/args.txt"}
 current_one = {"world":"CurrentOne/worlds/CurrentOne.wbt","args":"CurrentOne/controllers/fire/args.txt"}
 
 
