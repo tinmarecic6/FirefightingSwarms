@@ -1,6 +1,6 @@
 """fire controller."""
 from controller import Supervisor
-import random, math, numpy, time,os, sys, datetime
+import random, math, numpy, time,os, sys, datetime, json
 import pandas as pd
 from collections import Counter
 
@@ -288,18 +288,14 @@ def get_robot_quadrants():
 
 def gen_swarm(no_robots):
 	children = root.getField('children')
+	FollowerJson = """{'charger': [-10,-10,0.1], 'leader' : False,'RelativeLocation' : [0,0], 'Group' : 1, 'Orders' : 'Follow'}"""
+	LeaderJson = """{'charger': [-10,-10,0.1], 'leader' : True, 'Group' : 1, 'Orders' : "Follow"}"""
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
-	#generate leaders first
-	for leader_location in enumerate(leader_locations):
-		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
-		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+str(charging_station_location[0])+','+str(charging_station_location[1])+','+str(charging_station_location[2])+'"}')
-		robots.update({robot_id:(x,y)})
-
-	#generate other robots 
-	for _ in range(no_robots-len(leader_locations)):
+	print(json.dumps(FollowerJson))
+	for _ in range(no_robots):
 		robot_id,x,y = get_random_robot_locations()
-		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+str(charging_station_location[0])+','+str(charging_station_location[1])+','+str(charging_station_location[2])+'"}')
-
+		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+FollowerJson+'"}')
+			
 
 
 if __name__ == "__main__":

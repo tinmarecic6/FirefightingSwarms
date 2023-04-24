@@ -4,7 +4,7 @@ from controller import Robot
 TIME_STEP = 64
 robot = Robot()
 robot.batterySensorEnable(TIME_STEP)
-charger = list(map(float, robot.getCustomData().split(',')))
+customData = eval(robot.getCustomData())
 gps = robot.getDevice('gps')
 gps.enable(TIME_STEP)
 compass = robot.getDevice('compass')
@@ -65,7 +65,7 @@ def FindChargingStation():
     #print(getRobotBearing())
     #print(gps.getValues(),charger)
     # print(getAngle(charger,gps.getValues()),getRobotBearing())
-    angleCharging = getAngle(charger,gps.getValues())+180
+    angleCharging = getAngle(customData["charger"],gps.getValues())+180
     angleRobot = (getRobotBearing()+180)%360
     # print(angleCharging,angleRobot)
     angleDifference = angleCharging - angleRobot
