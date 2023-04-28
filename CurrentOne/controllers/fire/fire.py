@@ -359,8 +359,13 @@ def gen_swarm(no_robots):
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
 		robots.update({("_leader_"+str(robot_id)):(x,y)})
 	for id in range(no_robots-len(leader_locations)):
+		RelativeLocation = 'behind'
+		if id-6 >= 0:
+			RelativeLocation = 'right'
+		elif id-3 >= 0:
+			RelativeLocation = 'left'
 		group_id,robot_id,x,y = get_robot_quadrants(id)
-		FollowerJson = """{'charger': [-10,-10,0.1], 'leader' : False,'RelativeLocation' : [0,0], 'Group' : """+str(group_id)+""", 'Orders' : 'Follow'}"""
+		FollowerJson = """{'charger': [-10,-10,0.1], 'leader' : False,'RelativeLocation' : '"""+RelativeLocation+"""', 'Group' : """+str(group_id)+""", 'Orders' : 'Follow'}"""
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+FollowerJson+'"}')
 		robots.update({str(robot_id):(x,y)})
 
