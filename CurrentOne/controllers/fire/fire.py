@@ -286,7 +286,17 @@ def get_random_robot_locations():
 
 
 
-def get_robot_quadrants(id):
+def get_robot_quadrants(points,id):
+	group = id%3 + 1
+	# points = gen_all_possible_locations()
+	print(points[group])
+	p = random.choice(points[group])
+	x,y = p[0],p[1]
+	points[group].remove(p)
+	robots.update({str(id):(x,y)})
+	return group,id,x,y
+
+def get_robot_quadrants_backup(id):
 	group = id%3
 	if group_quadrants[group][0] < center_of_arena:
 		x = random.uniform(group_quadrants[group][0],center_of_arena)
@@ -346,11 +356,12 @@ def gen_all_possible_locations(num_points=50):
 		if valid and len(quadrants[quadrant]) < num_points/4:
 			quadrants[quadrant].append(new_point)
 	return quadrants
-# def gen_robot_quadrants_steen_way(id):
-	
+
+
 
 
 def gen_swarm(no_robots):
+	points = gen_all_possible_locations()
 	children = root.getField('children')
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	for leader_location in enumerate(leader_locations):
@@ -359,7 +370,7 @@ def gen_swarm(no_robots):
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
 		robots.update({("_leader_"+str(robot_id)):(x,y)})
 	for id in range(no_robots-len(leader_locations)):
-		group_id,robot_id,x,y = get_robot_quadrants(id)
+		group_id,robot_id,x,y = get_robot_quadrants(points,id)
 		FollowerJson = """{'charger': [-10,-10,0.1], 'leader' : False,'RelativeLocation' : [0,0], 'Group' : """+str(group_id)+""", 'Orders' : 'Follow'}"""
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+FollowerJson+'"}')
 		robots.update({str(robot_id):(x,y)})
@@ -367,7 +378,6 @@ def gen_swarm(no_robots):
 
 if __name__ == "__main__":
 	print("Running CurrentOne")
-	gen_all_possible_locations()
 	arguments = readArgs()
 	run_id = int(arguments[0])
 	no_robots = int(arguments[1])
