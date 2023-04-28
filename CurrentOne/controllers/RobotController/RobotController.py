@@ -144,6 +144,7 @@ while robot.step(TIME_STEP) != -1:
     if leader:
         leaderLocation = [gps.getValues(),(getRobotBearing()+180)%360]
         LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderLocation' : '"""+str(leaderLocation)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
+        robot.setCustomData(LeaderJson)
         #print("behind ",getRelativeLocationBehind(gps.getValues(),(getRobotBearing()+180)%360))
         #print(getRelativeLocationLeft(gps.getValues(),(getRobotBearing()+180)%360))
         #print(getRelativeLocationRight(gps.getValues(),(getRobotBearing()+180)%360))
