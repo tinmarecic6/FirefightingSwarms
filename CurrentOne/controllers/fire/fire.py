@@ -1,8 +1,16 @@
 """fire controller."""
-from controller import Supervisor
-import random, math, numpy, time,os, sys, datetime, json
-import pandas as pd
+import datetime
+import json
+import math
+import os
+import random
+import sys
+import time
 from collections import Counter
+
+import numpy
+import pandas as pd
+from controller import Supervisor
 
 """
 General variables
@@ -53,6 +61,7 @@ group_quadrants = [(-12,-7),(-7,-7),(-9,-12)]
 leader_locations = [(-12,-7),(-7,-7),(-7,-12)]
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
+leader_name_constant = "_leader_"
 robots = {}
 
 """
@@ -288,10 +297,7 @@ def get_random_robot_locations():
 
 def get_robot_quadrants(points,id):
 	group = id%3 + 1
-	# points = gen_all_possible_locations()
-	
 	p = random.choice(points[group])
-	print(p)
 	x,y = p[0],p[1]
 	points[group].remove(p)
 	robots.update({str(id):(x,y)})
@@ -302,12 +308,7 @@ def gen_all_possible_locations(num_points=50):
 	min_disance = 0.5
 	x_range = (-11.5,-7)
 	y_range = (-11.5,-7)
-	quadrants = {
-		1:[],
-		2:[],
-		3:[],
-		4:[]
-		}
+	quadrants = {1:[],2:[],3:[],4:[]}
 	while sum(len(q) for q in quadrants.values()) < num_points:
 		x = random.uniform(x_range[0],x_range[1])
 		y = random.uniform(y_range[0],y_range[1])
@@ -337,11 +338,25 @@ def gen_all_possible_locations(num_points=50):
 			quadrants[quadrant].append(new_point)
 	#removing quadrant 3 so we dont spawn any robots there and removing quadratn 4 to 3 fo key usage
 	quadrants[3] = quadrants.pop(4)
-	print(quadrants[3])
 	return quadrants
 
 
+def update_custom_data():
+	for r in robots.keys():
+		"""
+	fireSeeker = robot.getFromDef(robotName)
+	fireSeekerBattery = fireSeeker.getField('battery')
+	fireSeekerBatteryValue = fireSeekerBattery.getMFFloat(0)
+		"""
+		if leader_name_constant in r:
+			print(r)
+			leader = robot.getFromDef(robot_name_constant+r)
+			leaderCustomData = leader.getField('customData')
+			leaderCustomdataVal = leaderCustomData.getSFString()
+			print(leaderCustomdataVal)
 
+	
+			
 
 def gen_swarm(no_robots):
 	points = gen_all_possible_locations()
@@ -350,8 +365,8 @@ def gen_swarm(no_robots):
 	for leader_location in enumerate(leader_locations):
 		LeaderJson = """{'charger': [-10,-10,0.1], 'leader' : True, 'Group' : '"""+str(leader_location[0])+"""', 'Orders' : 'Follow'}"""
 		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
-		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
-		robots.update({("_leader_"+str(robot_id)):(x,y)})
+		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+leader_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
+		robots.update({(leader_name_constant+str(robot_id)):(x,y)})
 	for id in range(no_robots-len(leader_locations)):
 		RelativeLocation = 'behind'
 		if id-6 >= 0:
@@ -372,6 +387,7 @@ if __name__ == "__main__":
 	light_gen_chance = float(arguments[2])
 	formation = int(arguments[3])
 	gen_swarm(no_robots=no_robots)
+	update_custom_data()
 	generateFire(False,formation_id=formation)
 
 
