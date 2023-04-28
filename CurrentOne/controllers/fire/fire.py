@@ -209,6 +209,7 @@ def handle_fire_changes():
 def reduceFire(robotName):
 	global fire_changes
 	global fire_locations
+	print(robotName)
 	fireSeeker = robot.getFromDef(robotName)
 	fireSeekerBattery = fireSeeker.getField('battery')
 	fireSeekerBatteryValue = fireSeekerBattery.getMFFloat(0)
@@ -306,9 +307,8 @@ def get_robot_quadrants(id):
 			y = random.uniform(group_quadrants[group][1],center_of_arena)
 		else:
 			y = random.uniform(center_of_arena,group_quadrants[group][1])
-	robot_id = max(robots) + 1 if robots else 1
-	robots.update({robot_id:(x,y)})
-	return group,robot_id,x,y
+	robots.update({str(id):(x,y)})
+	return group,id,x,y
 
 
 
@@ -319,14 +319,14 @@ def gen_swarm(no_robots):
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	print(json.dumps(FollowerJson))
 	for leader_location in enumerate(leader_locations):
-		LeaderJson = """{'charger': [-10,-10,0.1], 'leader' : True, 'Group' : '1', 'Orders' : "Follow"}"""
+		LeaderJson = """{'charger': [-10,-10,0.1], 'leader' : True, 'Group' : '1', 'Orders' : 'Follow'}"""
 		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
-		robots.update({robot_id:(x,y)})
+		robots.update({("_leader_"+str(robot_id)):(x,y)})
 	for id in range(no_robots-len(leader_locations)):
 		group_id,robot_id,x,y = get_robot_quadrants(id)
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+FollowerJson+'"}')
-			
+		robots.update({str(robot_id):(x,y)})
 
 
 if __name__ == "__main__":
