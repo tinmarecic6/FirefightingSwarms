@@ -346,7 +346,7 @@ def gen_all_possible_locations(num_points=50):
 		if valid and len(quadrants[quadrant]) < num_points/4:
 			quadrants[quadrant].append(new_point)
 	return quadrants
-def gen_robot_quadrants_steen_way(id):
+# def gen_robot_quadrants_steen_way(id):
 	
 
 
