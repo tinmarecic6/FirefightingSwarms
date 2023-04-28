@@ -48,9 +48,9 @@ Robot simulation variables
 
 timestep = int(robot.getBasicTimeStep())
 green_area = (-12,-9)
-center_of_arena = -9
-group_quadrants = [(-12,-7,-center_of_arena,-center_of_arena),(-7,-7,-center_of_arena,-center_of_arena),(-7,-12,-center_of_arena,-center_of_arena)]
-leader_locations = [(-12,-7.2),(-7.2,-7.2),(-7.2,-12)]
+center_of_arena = -10
+group_quadrants = [(-12,-7),(-7,-7),(-9,-12)]
+leader_locations = [(-12,-7),(-7,-7),(-7,-12)]
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 robots = {}
@@ -59,7 +59,7 @@ robots = {}
 Charging station variables
 """
 
-charging_station_location = [-10,-10,0.1]
+charging_station_location = [center_of_arena,center_of_arena,0.1]
 
 """
 Helper functions
@@ -286,32 +286,22 @@ def get_random_robot_locations():
 
 
 
-def get_robot_quadrants(id):
-	group = id%3
-	if group_quadrants[group][0] < center_of_arena:
-		x = random.uniform(group_quadrants[group][0],center_of_arena)
-	else:
-		x = random.uniform(center_of_arena,group_quadrants[group][0])
-	if group_quadrants[group][1] < center_of_arena:
-		y = random.uniform(group_quadrants[group][1],center_of_arena)
-	else:
-		y = random.uniform(center_of_arena,group_quadrants[group][1])
-	while (x,y) in robots.values() and in_arena(x,y,get_floor_size(robot)):
-		if group_quadrants[group][0] < center_of_arena:
-			x = random.uniform(group_quadrants[group][0],center_of_arena)
-		else:
-			x = random.uniform(center_of_arena,group_quadrants[group][0])
-		if group_quadrants[group][1] < center_of_arena:
-			y = random.uniform(group_quadrants[group][1],center_of_arena)
-		else:
-			y = random.uniform(center_of_arena,group_quadrants[group][1])
+def get_robot_quadrants(points,id):
+	group = id%3 + 1
+	# points = gen_all_possible_locations()
+	
+	p = random.choice(points[group])
+	print(p)
+	x,y = p[0],p[1]
+	points[group].remove(p)
 	robots.update({str(id):(x,y)})
 	return group,id,x,y
 
+
 def gen_all_possible_locations(num_points=50):
 	min_disance = 0.5
-	x_range = (-12,-7)
-	y_range = (-12,-7)
+	x_range = (-11.5,-7)
+	y_range = (-11.5,-7)
 	quadrants = {
 		1:[],
 		2:[],
@@ -319,8 +309,8 @@ def gen_all_possible_locations(num_points=50):
 		4:[]
 		}
 	while sum(len(q) for q in quadrants.values()) < num_points:
-		x = random.uniform(x_range[1],x_range[0])
-		y = random.uniform(y_range[1],y_range[0])
+		x = random.uniform(x_range[0],x_range[1])
+		y = random.uniform(y_range[0],y_range[1])
 		new_point = (x,y)
 		valid = True
 		#checking the distance
@@ -338,19 +328,23 @@ def gen_all_possible_locations(num_points=50):
 			quadrant = 1
 		elif x < center_of_arena and y >= center_of_arena:
 			quadrant = 2
-		elif x < center_of_arena and y < center_of_arena:
+		elif x <= center_of_arena and y < center_of_arena:
 			quadrant = 3
 		elif x >= center_of_arena and y < center_of_arena:
 			quadrant = 4
 		
-		if valid and len(quadrants[quadrant]) < num_points/4:
+		if valid and len(quadrants[quadrant]) < num_points/3:
 			quadrants[quadrant].append(new_point)
+	#removing quadrant 3 so we dont spawn any robots there and removing quadratn 4 to 3 fo key usage
+	quadrants[3] = quadrants.pop(4)
+	print(quadrants[3])
 	return quadrants
-# def gen_robot_quadrants_steen_way(id):
-	
+
+
 
 
 def gen_swarm(no_robots):
+	points = gen_all_possible_locations()
 	children = root.getField('children')
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	for leader_location in enumerate(leader_locations):
@@ -364,7 +358,7 @@ def gen_swarm(no_robots):
 			RelativeLocation = 'right'
 		elif id-3 >= 0:
 			RelativeLocation = 'left'
-		group_id,robot_id,x,y = get_robot_quadrants(id)
+		group_id,robot_id,x,y = get_robot_quadrants(points,id)
 		FollowerJson = """{'Charger': [-10,-10,0.1], 'Leader' : False, 'LeaderLocation' : None,'RelativeLocation' : '"""+RelativeLocation+"""', 'Group' : """+str(group_id)+""", 'Orders' : 'Follow'}"""
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+FollowerJson+'"}')
 		robots.update({str(robot_id):(x,y)})
@@ -372,7 +366,6 @@ def gen_swarm(no_robots):
 
 if __name__ == "__main__":
 	print("Running CurrentOne")
-	gen_all_possible_locations()
 	arguments = readArgs()
 	run_id = int(arguments[0])
 	no_robots = int(arguments[1])
