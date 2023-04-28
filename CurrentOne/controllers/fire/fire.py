@@ -343,20 +343,22 @@ def gen_all_possible_locations(num_points=50):
 
 def update_custom_data():
 	for r in robots.keys():
-		"""
-	fireSeeker = robot.getFromDef(robotName)
-	fireSeekerBattery = fireSeeker.getField('battery')
-	fireSeekerBatteryValue = fireSeekerBattery.getMFFloat(0)
-		"""
 		if leader_name_constant in r:
-			print(r)
 			leader = robot.getFromDef(robot_name_constant+r)
-			leaderCustomData = leader.getField('customData')
-			leaderCustomdataVal = leaderCustomData.getSFString()
-			print(leaderCustomdataVal)
+			leader_custom_data = eval(leader.getField('customData').getSFString())
+			leader_location = leader_custom_data["LeaderLocation"]
+			leader_order = leader_custom_data["Orders"]
+			leader_group = leader_custom_data["Group"]
+			for follower in robots.keys():
+				if leader_name_constant not in follower:
+					follower = robot.getFromDef(robot_name_constant+r)
+					follower_custom_data = eval(follower.getField('customData').getSFString())
+					follower_group = follower_custom_data["Group"]
+					if leader_group == follower_group:
+						follower_custom_data["LeaderLocation"] = leader_location
+						follower_custom_data["Orders"] = leader_order
+						follower.SetSFString(str(follower_custom_data))
 
-	
-			
 
 def gen_swarm(no_robots):
 	points = gen_all_possible_locations()
