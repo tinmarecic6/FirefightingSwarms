@@ -296,7 +296,6 @@ def get_robot_quadrants(id):
 		y = random.uniform(group_quadrants[group][1],center_of_arena)
 	else:
 		y = random.uniform(center_of_arena,group_quadrants[group][1])
-	print(x,y)
 	while (x,y) in robots.values() and in_arena(x,y,get_floor_size(robot)):
 		if group_quadrants[group][0] < center_of_arena:
 			x = random.uniform(group_quadrants[group][0],center_of_arena)
@@ -310,14 +309,52 @@ def get_robot_quadrants(id):
 	robots.update({robot_id:(x,y)})
 	return group,robot_id,x,y
 
+def gen_all_possible_locations(num_points=50):
+	min_disance = 0.5
+	x_range = (-12,-7)
+	y_range = (-12,-7)
+	quadrants = {
+		1:[],
+		2:[],
+		3:[],
+		4:[]
+		}
+	while sum(len(q) for q in quadrants.values()) < num_points:
+		x = random.uniform(x_range[1],x_range[0])
+		y = random.uniform(y_range[1],y_range[0])
+		new_point = (x,y)
+		valid = True
+		#checking the distance
+		for q in quadrants.values():
+			for point in q:
+				distance = math.sqrt((new_point[0] - point[0])**2 + (new_point[1] - point[1])**2)
+				if distance < min_disance:
+					valid = False
+					break
+			if not valid:
+				break
 
+		quadrant = None
+		if x >= center_of_arena and y >= center_of_arena:
+			quadrant = 1
+		elif x < center_of_arena and y >= center_of_arena:
+			quadrant = 2
+		elif x < center_of_arena and y < center_of_arena:
+			quadrant = 3
+		elif x >= center_of_arena and y < center_of_arena:
+			quadrant = 4
+		
+		if valid and len(quadrants[quadrant]) < num_points/4:
+			quadrants[quadrant].append(new_point)
+	return quadrants
+def gen_robot_quadrants_steen_way(id):
+	
 
 
 def gen_swarm(no_robots):
 	children = root.getField('children')
 	FollowerJson = """{'charger': [-10,-10,0.1], 'leader' : False,'RelativeLocation' : [0,0], 'Group' : 1, 'Orders' : 'Follow'}"""
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
-	print(json.dumps(FollowerJson))
 	for leader_location in enumerate(leader_locations):
 		LeaderJson = """{'charger': [-10,-10,0.1], 'leader' : True, 'Group' : '1', 'Orders' : "Follow"}"""
 		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
@@ -331,6 +368,7 @@ def gen_swarm(no_robots):
 
 if __name__ == "__main__":
 	print("Running CurrentOne")
+	gen_all_possible_locations()
 	arguments = readArgs()
 	run_id = int(arguments[0])
 	no_robots = int(arguments[1])
