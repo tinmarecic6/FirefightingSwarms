@@ -350,8 +350,9 @@ def gen_swarm(no_robots):
 	for leader_location in enumerate(leader_locations):
 		LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderLocation' : None, 'Group' : '"""+str(leader_location[0])+"""', 'Orders' : 'Follow'}"""
 		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
-		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
-		robots.update({("_leader_"+str(robot_id)):(x,y)})
+		if robot_id == 0:
+			children.importMFNodeFromString(-1,'DEF '+robot_name_constant+"_leader_"+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
+			robots.update({("_leader_"+str(robot_id)):(x,y)})
 	for id in range(no_robots-len(leader_locations)):
 		RelativeLocation = 'behind'
 		if id-6 >= 0:
