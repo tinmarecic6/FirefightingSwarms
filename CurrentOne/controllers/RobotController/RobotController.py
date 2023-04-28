@@ -5,6 +5,10 @@ TIME_STEP = 64
 robot = Robot()
 robot.batterySensorEnable(TIME_STEP)
 customData = eval(robot.getCustomData())
+group = customData['Group']
+leader = customData['Leader']
+leaderLocation = customData['LeaderLocation']
+
 gps = robot.getDevice('gps')
 gps.enable(TIME_STEP)
 compass = robot.getDevice('compass')
@@ -65,7 +69,7 @@ def FindChargingStation():
     #print(getRobotBearing())
     #print(gps.getValues(),charger)
     # print(getAngle(charger,gps.getValues()),getRobotBearing())
-    angleCharging = getAngle(customData["charger"],gps.getValues())+180
+    angleCharging = getAngle(customData["Charger"],gps.getValues())+180
     angleRobot = (getRobotBearing()+180)%360
     # print(angleCharging,angleRobot)
     angleDifference = angleCharging - angleRobot
@@ -99,6 +103,17 @@ def setSpeed(left,right):
     wheels[3].setVelocity(right)
 
 while robot.step(TIME_STEP) != -1:
+    orders = customData['Orders'] # Can be Follow, Charger or FireFight
+    if leader:
+        leaderLocation = [gps.getValues(),getRobotBearing()%360]
+        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderLocation' : '"""+str(leaderLocation)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
+    else:
+        if orders == 'Follow' and leaderLocation != None:
+            relativeLocation = customData['RelativeLocation']
+            gps = leaderLocation[0]
+            angle = getRobotBearing()%360
+            print(gps)
+            print(angle)
     battery = robot.batterySensorGetValue()
     if battery != 1:
         leftSensor = ls[0].getValue()
