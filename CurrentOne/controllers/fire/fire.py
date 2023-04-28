@@ -253,6 +253,7 @@ def generateFire(random_spread = False,formation_id = 0):
 def simulate_fire(children):
 	global passed_time
 	while robot.step(timestep) != -1:
+		update_custom_data()
 		if double_check(fire_locations):
 			print("Fires generated on the same location!")
 		if len(fire_locations) != 0:
@@ -348,16 +349,16 @@ def update_custom_data():
 			leader_custom_data = eval(leader.getField('customData').getSFString())
 			leader_location = leader_custom_data["LeaderLocation"]
 			leader_order = leader_custom_data["Orders"]
-			leader_group = leader_custom_data["Group"]
+			leader_group = int(leader_custom_data["Group"])
 			for follower in robots.keys():
 				if leader_name_constant not in follower:
-					follower = robot.getFromDef(robot_name_constant+r)
+					follower = robot.getFromDef(robot_name_constant+follower)
 					follower_custom_data = eval(follower.getField('customData').getSFString())
-					follower_group = follower_custom_data["Group"]
+					follower_group = int(follower_custom_data["Group"])
 					if leader_group == follower_group:
 						follower_custom_data["LeaderLocation"] = leader_location
 						follower_custom_data["Orders"] = leader_order
-						follower.SetSFString(str(follower_custom_data))
+						follower.getField('customData').setSFString(str(follower_custom_data))
 
 
 def gen_swarm(no_robots):
@@ -376,7 +377,7 @@ def gen_swarm(no_robots):
 		elif id-3 >= 0:
 			RelativeLocation = 'left'
 		group_id,robot_id,x,y = get_robot_quadrants(points,id)
-		FollowerJson = """{'Charger': [-10,-10,0.1], 'Leader' : False, 'LeaderLocation' : None,'RelativeLocation' : '"""+RelativeLocation+"""', 'Group' : """+str(group_id)+""", 'Orders' : 'Follow'}"""
+		FollowerJson = """{'Charger': [-10,-10,0.1], 'Leader' : False, 'LeaderLocation' : None,'RelativeLocation' : '"""+RelativeLocation+"""', 'Group' : '"""+str(group_id)+"""', 'Orders' : 'Follow'}"""
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+FollowerJson+'"}')
 		robots.update({str(robot_id):(x,y)})
 
