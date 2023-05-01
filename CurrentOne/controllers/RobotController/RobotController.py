@@ -108,14 +108,14 @@ def driveToPoint(point):
     #[int(charger[0]),int(charger[1])]
 
 def setSpeed(left,right):
-    leftSensorDistance = ds[0].getValue()
-    rightSensorDistance = ds[1].getValue()    
-    if leftSensorDistance > rightSensorDistance:
-        left = 10
-        right = -5
-    elif leftSensorDistance < rightSensorDistance:
-        left = -5
-        right = 10
+    # leftSensorDistance = ds[0].getValue()
+    # rightSensorDistance = ds[1].getValue()    
+    # if leftSensorDistance > rightSensorDistance:
+    #     left = 10
+    #     right = -5
+    # elif leftSensorDistance < rightSensorDistance:
+    #     left = -5
+    #     right = 10
     wheels[0].setVelocity(left)
     wheels[1].setVelocity(right)
     wheels[2].setVelocity(left)
@@ -131,19 +131,19 @@ def getRelativeLocationBehind(gps,angle):
     theta = math.radians(angle) # angle in radians
 
     # find the unit vector in the direction of theta
-    dx = math.cos(theta)
+    dx = -math.cos(theta)
     dy = math.sin(theta)
 
-    return (float(gps[0]) - dx, float(gps[1]) - dy)
+    return (float(gps[0]) - dx*2, float(gps[1]) - dy*2)
 
 def getRelativeLocationLeft(gps,angle):
     theta = math.radians(angle) # angle in radians
 
     # find the unit vector perpendicular to theta
-    dx = math.sin(theta)
-    dy = -math.cos(theta)
+    dx = -math.sin(theta)
+    dy = math.cos(theta)
 
-    return (float(gps[0]) + dx, float(gps[1]) + dy)
+    return (float(gps[0]) + dx*2, float(gps[1]) - dy*2)
 
 def getRelativeLocationRight(gps,angle):
     theta = math.radians(angle) # angle in radians
@@ -152,7 +152,7 @@ def getRelativeLocationRight(gps,angle):
     dx = -math.sin(theta)
     dy = math.cos(theta)
 
-    return (float(gps[0]) + dx, float(gps[1]) + dy)
+    return (float(gps[0]) - dx*2, float(gps[1]) + dy*2)
 
 def getRelativeLocation(relativeLocation,gps,angle):
     if relativeLocation == 'behind':
@@ -166,7 +166,7 @@ while robot.step(TIME_STEP) != -1:
     customData = eval(robot.getCustomData())
     orders = customData['Orders'] # Can be Follow, Charger or FireFight
     if leader:
-        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing()+180)%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
+        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
         robot.setCustomData(LeaderJson)
         #print("behind ",getRelativeLocationBehind(gps.getValues(),(getRobotBearing()+180)%360))
         #print(getRelativeLocationLeft(gps.getValues(),(getRobotBearing()+180)%360))
@@ -176,21 +176,20 @@ while robot.step(TIME_STEP) != -1:
             leftSensor = ls[0].getValue()
             rightSensor = ls[1].getValue()
             #print(leftSensorDistance,rightSensorDistance)
-            # (leftSensor, rightSensor)
+            HandleLightLeader(leftSensor, rightSensor)
         else:
             driveToPoint(customData["Charger"])
     else:
         if orders == 'Follow' and customData['LeaderGPS'] != None:
             LeaderAngle = float(customData['LeaderAngle'])
-            print(LeaderAngle)
             LeaderGPS = [float(i) for i in customData['LeaderGPS'].replace('[','').replace(']','').split(',')]
             relativeLocation = customData['RelativeLocation']
-            print(orders,LeaderGPS)
-            angle = (getRobotBearing()+180)%360
+            angle = (getRobotBearing())%360
             goal = getRelativeLocation(relativeLocation,LeaderGPS,LeaderAngle)
+            print(group,LeaderAngle,goal,LeaderGPS)
             distance = math.sqrt((goal[0] - gps.getValues()[0])**2 + (goal[1] - gps.getValues()[1])**2)
             print(distance)
-            if distance > 0.5:
+            if distance > 0.4:
                 driveToPoint(goal)
             else:
                 stop()
