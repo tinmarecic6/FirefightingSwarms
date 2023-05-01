@@ -335,9 +335,12 @@ def gen_all_possible_locations(num_points=50):
 		elif x >= center_of_arena and y < center_of_arena:
 			quadrant = 4
 		
+		if new_point in leader_locations:
+			valid = False
+			
 		if valid and len(quadrants[quadrant]) < num_points/3:
 			quadrants[quadrant].append(new_point)
-	#removing quadrant 3 so we dont spawn any robots there and removing quadratn 4 to 3 fo key usage
+	#removing quadrant 3 so we dont spawn any robots there and removing quadrant 4 to 3 fo key usage
 	quadrants[3] = quadrants.pop(4)
 	return quadrants
 

@@ -11,9 +11,11 @@ improved_simple_alg_data_0_01 = data[(data["light_generation_chance"]==0.01)&(da
 
 
 mean_000_1 = simple_alg_data_0_001.groupby(by="formation").mean()
+mean_000_1.insert(0,"algorithm","SimpleAlgorithm")
 mean_000_5 = simple_alg_data_0_005.groupby(by="formation").mean()
 mean_00_1 = simple_alg_data_0_001.groupby(by="formation").mean()
-
+print(mean_000_1)
+# frames = [ simple_alg_data_0_001.groupby(by="formation").mean(),simple_alg_data_0_005.groupby(by="formation").mean(),simple_alg_data_0_001.groupby(by="formation").mean()]
 
 # print(simple_alg_data[["algorithm","formation","light_generation_chance","time_passed"]])
 

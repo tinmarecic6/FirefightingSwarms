@@ -136,7 +136,7 @@ def getRelativeLocationBehind(gps,angle):
 
     return (float(gps[0]) - dx, float(gps[1]) - dy)
 
-def getRelativeLocationRight(gps,angle):
+def getRelativeLocationLeft(gps,angle):
     theta = math.radians(angle) # angle in radians
 
     # find the unit vector perpendicular to theta
@@ -145,7 +145,7 @@ def getRelativeLocationRight(gps,angle):
 
     return (float(gps[0]) + dx, float(gps[1]) + dy)
 
-def getRelativeLocationLeft(gps,angle):
+def getRelativeLocationRight(gps,angle):
     theta = math.radians(angle) # angle in radians
 
     # find the unit vector perpendicular to theta
@@ -176,12 +176,13 @@ while robot.step(TIME_STEP) != -1:
             leftSensor = ls[0].getValue()
             rightSensor = ls[1].getValue()
             #print(leftSensorDistance,rightSensorDistance)
-            HandleLightLeader(leftSensor, rightSensor)
+            # (leftSensor, rightSensor)
         else:
             driveToPoint(customData["Charger"])
     else:
         if orders == 'Follow' and customData['LeaderGPS'] != None:
             LeaderAngle = float(customData['LeaderAngle'])
+            print(LeaderAngle)
             LeaderGPS = [float(i) for i in customData['LeaderGPS'].replace('[','').replace(']','').split(',')]
             relativeLocation = customData['RelativeLocation']
             print(orders,LeaderGPS)
