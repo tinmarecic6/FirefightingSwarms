@@ -79,3 +79,5 @@ runID,datetime,algorithm,no_robots,light_generation_chance,formation,time_passed
 77,28-04-2023_11-19-07,CurrentOne,10,0.01,7,600032,32
 78,28-04-2023_11-39-15,CurrentOne,10,0.01,7,600032,32
 79,28-04-2023_13-01-24,CurrentOne,4,0.01,7,600032,32
+80,01-05-2023_10-47-41,CurrentOne,4,0.01,7,600032,32
+81,01-05-2023_11-43-22,CurrentOne,12,0.01,7,600032,32

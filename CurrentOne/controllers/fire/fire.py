@@ -302,7 +302,7 @@ def get_robot_quadrants(points,id):
 	x,y = p[0],p[1]
 	points[group].remove(p)
 	robots.update({str(id):(x,y)})
-	return group,id,x,y
+	return group-1,id,x,y
 
 
 def gen_all_possible_locations(num_points=50):
@@ -327,9 +327,9 @@ def gen_all_possible_locations(num_points=50):
 
 		quadrant = None
 		if x >= center_of_arena and y >= center_of_arena:
-			quadrant = 1
-		elif x < center_of_arena and y >= center_of_arena:
 			quadrant = 2
+		elif x < center_of_arena and y >= center_of_arena:
+			quadrant = 1
 		elif x <= center_of_arena and y < center_of_arena:
 			quadrant = 3
 		elif x >= center_of_arena and y < center_of_arena:
@@ -347,7 +347,8 @@ def update_custom_data():
 		if leader_name_constant in r:
 			leader = robot.getFromDef(robot_name_constant+r)
 			leader_custom_data = eval(leader.getField('customData').getSFString())
-			leader_location = leader_custom_data["LeaderLocation"]
+			LeaderGPS = leader_custom_data["LeaderGPS"]
+			LeaderAngle = leader_custom_data["LeaderAngle"]
 			leader_order = leader_custom_data["Orders"]
 			leader_group = int(leader_custom_data["Group"])
 			for follower in robots.keys():
@@ -356,7 +357,8 @@ def update_custom_data():
 					follower_custom_data = eval(follower.getField('customData').getSFString())
 					follower_group = int(follower_custom_data["Group"])
 					if leader_group == follower_group:
-						follower_custom_data["LeaderLocation"] = leader_location
+						follower_custom_data["LeaderGPS"] = LeaderGPS
+						follower_custom_data["LeaderAngle"] = LeaderAngle
 						follower_custom_data["Orders"] = leader_order
 						follower.getField('customData').setSFString(str(follower_custom_data))
 
@@ -366,7 +368,7 @@ def gen_swarm(no_robots):
 	children = root.getField('children')
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	for leader_location in enumerate(leader_locations):
-		LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderLocation' : None, 'Group' : '"""+str(leader_location[0])+"""', 'Orders' : 'Follow'}"""
+		LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderGPS' : None, 'LeaderAngle' : None, 'Group' : '"""+str(leader_location[0])+"""', 'Orders' : 'Follow'}"""
 		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+leader_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
 		robots.update({(leader_name_constant+str(robot_id)):(x,y)})
@@ -377,7 +379,7 @@ def gen_swarm(no_robots):
 		elif id-3 >= 0:
 			RelativeLocation = 'left'
 		group_id,robot_id,x,y = get_robot_quadrants(points,id)
-		FollowerJson = """{'Charger': [-10,-10,0.1], 'Leader' : False, 'LeaderLocation' : None,'RelativeLocation' : '"""+RelativeLocation+"""', 'Group' : '"""+str(group_id)+"""', 'Orders' : 'Follow'}"""
+		FollowerJson = """{'Charger': [-10,-10,0.1], 'Leader' : False, 'LeaderGPS' : None,'LeaderAngle' : None,'RelativeLocation' : '"""+RelativeLocation+"""', 'Group' : '"""+str(group_id)+"""', 'Orders' : 'Follow'}"""
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+FollowerJson+'"}')
 		robots.update({str(robot_id):(x,y)})
 
