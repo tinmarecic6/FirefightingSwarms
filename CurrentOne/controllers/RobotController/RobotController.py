@@ -49,6 +49,26 @@ def HandleLight(left, right):
         rightSpeed = 10
     setSpeed(leftSpeed,rightSpeed)
 
+def HandleLightLeader(left, right):
+    leftSpeed = -2
+    rightSpeed = 2
+    if (left == 1000 and right == 1000):
+        leftSpeed = 0
+        rightSpeed = 0
+    elif (left == 1000):
+        leftSpeed = 6
+        rightSpeed = -3
+    elif (right == 1000):
+        leftSpeed = -3
+        rightSpeed = 6
+    elif (left>right):
+        leftSpeed = 6
+        rightSpeed = 3
+    elif (right>left):
+        leftSpeed = 3
+        rightSpeed = 6
+    setSpeed(leftSpeed,rightSpeed)
+
 def getRobotBearing():
     north = compass.getValues()
     rad = math.atan2(north[1], north[0])
@@ -156,7 +176,7 @@ while robot.step(TIME_STEP) != -1:
             leftSensor = ls[0].getValue()
             rightSensor = ls[1].getValue()
             #print(leftSensorDistance,rightSensorDistance)
-            HandleLight(leftSensor, rightSensor)
+            HandleLightLeader(leftSensor, rightSensor)
         else:
             driveToPoint(customData["Charger"])
     else:
