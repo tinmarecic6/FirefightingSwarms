@@ -1,4 +1,2 @@
-Rewrite the testing section 
-Modify the formation pictures
-Add the table to the testing section
-Fix the group assigment in the json
+Ask steen about the line 306
+Will we compare the new algorithms to the simple algorithms?

@@ -42,6 +42,7 @@ if __name__ == "__main__":
 		19:[10,0.01,6],
 		20:[10,0.01,7]
 		}
+for _ in range(3):
 	for item in arguments.items():	
-		runSim(current_one,item[0],item[1][0],item[1][1],item[1][2])		
+		runSim(simple_algorithm,item[0],item[1][0],item[1][1],item[1][2])		
 	
