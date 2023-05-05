@@ -183,7 +183,7 @@ while robot.step(TIME_STEP) != -1:
         else:
             orders = 'Charger'
             driveToPoint(customData["Charger"])
-        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True,'LeaderTarget': """+str(gps.getValues())+""", 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
+        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True,'LeaderTarget': """+str(target)+""", 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
         robot.setCustomData(LeaderJson)
     else:
         if orders == 'Follow' and customData['LeaderGPS'] != None and customData['LeaderAngle'] != None:
