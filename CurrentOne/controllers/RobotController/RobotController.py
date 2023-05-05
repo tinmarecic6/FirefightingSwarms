@@ -1,4 +1,4 @@
-import math, ast, decimal
+import math, ast, decimal, time
 from controller import Robot
 
 TIME_STEP = 64
@@ -49,26 +49,6 @@ def HandleLight(left, right):
         rightSpeed = 10
     setSpeed(leftSpeed,rightSpeed)
 
-def HandleLightLeader(left, right):
-    leftSpeed = -2
-    rightSpeed = 2
-    if (left == 1000 and right == 1000):
-        leftSpeed = 0
-        rightSpeed = 0
-    elif (left == 1000):
-        leftSpeed = 6
-        rightSpeed = -3
-    elif (right == 1000):
-        leftSpeed = -3
-        rightSpeed = 6
-    elif (left>right):
-        leftSpeed = 6
-        rightSpeed = 3
-    elif (right>left):
-        leftSpeed = 3
-        rightSpeed = 6
-    setSpeed(leftSpeed,rightSpeed)
-
 def getRobotBearing():
     north = compass.getValues()
     rad = math.atan2(north[1], north[0])
@@ -116,6 +96,7 @@ def setSpeed(left,right):
     # elif leftSensorDistance < rightSensorDistance:
     #     left = -5
     #     right = 10
+
     wheels[0].setVelocity(left)
     wheels[1].setVelocity(right)
     wheels[2].setVelocity(left)
@@ -161,7 +142,8 @@ def getRelativeLocation(relativeLocation,gps,angle):
         return getRelativeLocationLeft(gps,angle)
     if relativeLocation == 'right':
         return getRelativeLocationRight(gps,angle)
-
+firstDrive = True
+comingBackFromCharger = False
 while robot.step(TIME_STEP) != -1:
     customData = eval(robot.getCustomData())
     orders = customData['Orders'] # Can be Follow, Charger or FireFight
@@ -172,18 +154,36 @@ while robot.step(TIME_STEP) != -1:
         #print(getRelativeLocationRight(gps.getValues(),(getRobotBearing()+180)%360))
         leftSensor = ls[0].getValue()
         rightSensor = ls[1].getValue()
+        location = customData['LeaderGPS']
         battery = robot.batterySensorGetValue()
-        if target != None and leftSensor < 500 and rightSensor < 500 and battery != 1:
-            orders = 'Follow'
-            driveToPoint(target)
-        elif battery != 1:
-            target = None
+        if target != None and len(target) == 2 and leftSensor < 300 and rightSensor < 300 and battery != 1:
+            distance = math.sqrt((target[0] - gps.getValues()[0])**2 + (target[1] - gps.getValues()[1])**2)
+            if distance < 1:
+                print(distance, target, gps.getValues())
+                target.append(leftSensor+rightSensor)
+                orders = 'FireFight'
+                HandleLight(leftSensor, rightSensor)
+                location = gps.getValues()
+            else:
+                driveToPoint(target)
+                if firstDrive:
+                    location = gps.getValues()
+        elif target != None and battery != 1:
+            if len(target) == 2:
+                print("Lightsensors triggered",distance, target, gps.getValues())
+                target.append(leftSensor+rightSensor)
             orders = 'FireFight'
-            HandleLightLeader(leftSensor, rightSensor)
+            HandleLight(leftSensor, rightSensor)
+            location = gps.getValues()
+        elif battery != 1:
+            orders = 'FireFight'
+            HandleLight(leftSensor, rightSensor)
+            location = gps.getValues()
         else:
-            orders = 'Charger'
+            target = [gps.getValues()[0],gps.getValues()[1]] 
             driveToPoint(customData["Charger"])
-        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True,'LeaderTarget': """+str(target)+""", 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
+            firstDrive = False
+        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True,'LeaderTarget': """+str(target)+""", 'LeaderGPS' : '"""+str(location)+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : '"""+orders+"""'}"""
         robot.setCustomData(LeaderJson)
     else:
         if orders == 'Follow' and customData['LeaderGPS'] != None and customData['LeaderAngle'] != None:
@@ -204,7 +204,22 @@ while robot.step(TIME_STEP) != -1:
             if battery != 1:
                 leftSensor = ls[0].getValue()
                 rightSensor = ls[1].getValue()
+                if comingBackFromCharger == True:
+                    LeaderAngle = float(customData['LeaderAngle'])
+                    LeaderGPS = [float(i) for i in customData['LeaderGPS'].replace('[','').replace(']','').split(',')]
+                    relativeLocation = customData['RelativeLocation']
+                    angle = (getRobotBearing())%360
+                    goal = getRelativeLocation(relativeLocation,LeaderGPS,LeaderAngle)
+                    distance = math.sqrt((goal[0] - gps.getValues()[0])**2 + (goal[1] - gps.getValues()[1])**2)
+                    if leftSensor < 300 and rightSensor < 300:
+                        comingBackFromCharger = False
+                    elif distance > 0.4:
+                        driveToPoint(goal)
+                    else:
+                        comingBackFromCharger = False
                 #print(leftSensorDistance,rightSensorDistance)
                 HandleLight(leftSensor, rightSensor)
             else:
+                comingBackFromCharger = True
                 driveToPoint(customData["Charger"])
+                

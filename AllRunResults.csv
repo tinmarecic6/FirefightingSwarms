@@ -141,3 +141,5 @@ runID,datetime,algorithm,no_robots,light_generation_chance,formation,time_passed
 139,01-05-2023_12-39-04,SimpleAlgorithm,10,0.01,4,600032,32
 140,01-05-2023_12-40-48,SimpleAlgorithm,10,0.01,5,600032,32
 141,01-05-2023_12-42-32,SimpleAlgorithm,10,0.01,6,600032,32
+142,05-05-2023_11-06-52,CurrentOne,12,0.01,7,600032,32
+143,05-05-2023_11-52-14,CurrentOne,12,0.01,7,600032,32
