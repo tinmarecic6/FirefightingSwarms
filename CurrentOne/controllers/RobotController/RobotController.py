@@ -192,9 +192,7 @@ while robot.step(TIME_STEP) != -1:
             relativeLocation = customData['RelativeLocation']
             angle = (getRobotBearing())%360
             goal = getRelativeLocation(relativeLocation,LeaderGPS,LeaderAngle)
-            print(group,LeaderAngle,goal,LeaderGPS)
             distance = math.sqrt((goal[0] - gps.getValues()[0])**2 + (goal[1] - gps.getValues()[1])**2)
-            print(distance)
             if distance > 0.4:
                 driveToPoint(goal)
             else:
