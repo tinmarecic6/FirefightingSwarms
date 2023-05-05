@@ -79,6 +79,10 @@ charging_station_location = [center_of_arena,center_of_arena,0.1]
 """
 Helper functions
 """
+def get_distance(a,b):
+	distance = math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
+	return distance
+
 def double_check(dict_to_check):
 	#Check for no fires with the same location
 	# Create a Counter from the dictionary values
@@ -260,6 +264,7 @@ def simulate_fire(children):
 	global passed_time
 	while robot.step(timestep) != -1:
 		update_custom_data()
+		check_for_charger()
 		if double_check(fire_locations):
 			print("Fires generated on the same location!")
 		if len(fire_locations) != 0:
@@ -278,6 +283,7 @@ def simulate_fire(children):
 		for bot_id in robots.keys():
 			reduceFire(robot_name_constant+str(bot_id))
 		handle_fire_changes()
+
 		passed_time += timestep
 		if passed_time > simulation_time or not fire_locations:
 			save_results(no_robots=no_robots,light_gen_chance=light_gen_chance,formation=formation,passed_time=passed_time,timestep=timestep)
@@ -349,6 +355,14 @@ def gen_all_possible_locations(num_points=50):
 	#removing quadrant 3 so we dont spawn any robots there and removing quadrant 4 to 3 fo key usage
 	quadrants[3] = quadrants.pop(4)
 	return quadrants
+
+def check_for_charger():
+	for r in robots.keys():
+		bot = robot.getFromDef(robot_name_constant+r)
+		location  = bot.getField('translation').getSFVec3f()
+		dist = get_distance(location,charging_station_location)
+		if dist < 2:
+			bot.getField('battery').setMFFloat(0,100)
 
 
 def update_custom_data():
