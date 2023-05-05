@@ -88,14 +88,14 @@ def driveToPoint(point):
     #[int(charger[0]),int(charger[1])]
 
 def setSpeed(left,right):
-    # leftSensorDistance = ds[0].getValue()
-    # rightSensorDistance = ds[1].getValue()    
-    # if leftSensorDistance > rightSensorDistance:
-    #     left = 10
-    #     right = -5
-    # elif leftSensorDistance < rightSensorDistance:
-    #     left = -5
-    #     right = 10
+    leftSensorDistance = ds[0].getValue()
+    rightSensorDistance = ds[1].getValue()    
+    if leftSensorDistance > rightSensorDistance:
+        left = 10
+        right = -5
+    elif leftSensorDistance < rightSensorDistance:
+        left = -5
+        right = 10
 
     wheels[0].setVelocity(left)
     wheels[1].setVelocity(right)
