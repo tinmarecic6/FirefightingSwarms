@@ -166,29 +166,33 @@ while robot.step(TIME_STEP) != -1:
     customData = eval(robot.getCustomData())
     orders = customData['Orders'] # Can be Follow, Charger or FireFight
     if leader:
-        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
-        robot.setCustomData(LeaderJson)
+        target = customData['LeaderTarget']
         #print("behind ",getRelativeLocationBehind(gps.getValues(),(getRobotBearing()+180)%360))
         #print(getRelativeLocationLeft(gps.getValues(),(getRobotBearing()+180)%360))
         #print(getRelativeLocationRight(gps.getValues(),(getRobotBearing()+180)%360))
+        leftSensor = ls[0].getValue()
+        rightSensor = ls[1].getValue()
         battery = robot.batterySensorGetValue()
-        if battery != 1:
-            leftSensor = ls[0].getValue()
-            rightSensor = ls[1].getValue()
-            #print(leftSensorDistance,rightSensorDistance)
+        if target != None and leftSensor < 500 and rightSensor < 500 and battery != 1:
+            orders = 'Follow'
+            driveToPoint(target)
+        elif battery != 1:
+            target = None
+            orders = 'FireFight'
             HandleLightLeader(leftSensor, rightSensor)
         else:
+            orders = 'Charger'
             driveToPoint(customData["Charger"])
+        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True,'LeaderTarget': """+str(gps.getValues())+""", 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
+        robot.setCustomData(LeaderJson)
     else:
-        if orders == 'Follow' and customData['LeaderGPS'] != None:
+        if orders == 'Follow' and customData['LeaderGPS'] != None and customData['LeaderAngle'] != None:
             LeaderAngle = float(customData['LeaderAngle'])
             LeaderGPS = [float(i) for i in customData['LeaderGPS'].replace('[','').replace(']','').split(',')]
             relativeLocation = customData['RelativeLocation']
             angle = (getRobotBearing())%360
             goal = getRelativeLocation(relativeLocation,LeaderGPS,LeaderAngle)
-            print(group,LeaderAngle,goal,LeaderGPS)
             distance = math.sqrt((goal[0] - gps.getValues()[0])**2 + (goal[1] - gps.getValues()[1])**2)
-            print(distance)
             if distance > 0.4:
                 driveToPoint(goal)
             else:
