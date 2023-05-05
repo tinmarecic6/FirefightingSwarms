@@ -377,13 +377,7 @@ def gen_swarm(no_robots):
 	children = root.getField('children')
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	for leader_location in enumerate(leader_locations):
-		leader_temp = leader_location[0]%3
-		if leader_temp == 0:
-			leader_goal = "upper_left"
-		elif leader_temp == 1:
-			leader_goal = "upper_right"
-		elif leader_temp == 2:
-			leader_goal = "bottom_right"
+		leader_goal = "upper_left" if leader_location[0] % 3 == 0 else "upper_right" if leader_location[0] % 3 == 1 else "bottom_right"
 		leader_target = leader_goals[leader_goal]
 		print(leader_goal,leader_location[0],leader_location[0]%3)
 		LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderTarget' : """ +str(leader_target)+ """, 'LeaderGPS' : None, 'LeaderAngle' : None, 'Group' : '"""+str(leader_location[0])+"""', 'Orders' : 'Follow'}"""
