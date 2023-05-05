@@ -1,6 +1,8 @@
 import pandas as pd
 
 data = pd.read_csv("AllRunResults_bckp.csv")
+simpleAlg = "SimpleAlgorithm"
+simpleAlgWithAvoid = "SimpleAlgorithmWihAvoidance"
 simple_alg_data_0_001 = data[(data["light_generation_chance"]==0.001) & (data["algorithm"]=="SimpleAlgorithm")]
 simple_alg_data_0_005 = data[(data["light_generation_chance"]==0.005) & (data["algorithm"]=="SimpleAlgorithm")]
 simple_alg_data_0_01 = data[(data["light_generation_chance"]==0.01) & (data["algorithm"]=="SimpleAlgorithm")]
@@ -11,10 +13,14 @@ improved_simple_alg_data_0_01 = data[(data["light_generation_chance"]==0.01)&(da
 
 
 mean_000_1 = simple_alg_data_0_001.groupby(by="formation").mean()
-mean_000_1.insert(0,"algorithm","SimpleAlgorithm")
+mean_000_1.insert(0,"algorithm",simpleAlg)
 mean_000_5 = simple_alg_data_0_005.groupby(by="formation").mean()
+mean_000_5.insert(0,"algorithm",simpleAlg)
 mean_00_1 = simple_alg_data_0_001.groupby(by="formation").mean()
-print(mean_000_1)
+mean_00_1.insert(0,"algorithm",simpleAlg)
+
+
+
 # frames = [ simple_alg_data_0_001.groupby(by="formation").mean(),simple_alg_data_0_005.groupby(by="formation").mean(),simple_alg_data_0_001.groupby(by="formation").mean()]
 
 # print(simple_alg_data[["algorithm","formation","light_generation_chance","time_passed"]])

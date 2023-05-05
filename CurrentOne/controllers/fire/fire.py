@@ -60,9 +60,9 @@ center_of_arena = -10
 group_quadrants = [(-12,-7),(-7,-7),(-9,-12)]
 leader_locations = [(-12,-7),(-7,-7),(-7,-12)]
 leader_goals = {
-	"upper_left" : [-11,11],
-	"upper_right" : [11,11],
-	"bottom_right" : [11,-11],
+	"upper_left" : [-12,12],
+	"upper_right" : [12,12],
+	"bottom_right" : [12,-12],
 	"bottom_left" : [-11,-11]
 }
 light_intensity_decrement = 0.2
@@ -361,7 +361,7 @@ def check_for_charger():
 		bot = robot.getFromDef(robot_name_constant+r)
 		location  = bot.getField('translation').getSFVec3f()
 		dist = get_distance(location,charging_station_location)
-		if dist < 5:
+		if dist < 5 :
 			bot.getField('battery').setMFFloat(0,100)
 
 
