@@ -382,7 +382,7 @@ def gen_swarm(no_robots):
 			leader_goal = "upper_left"
 		elif leader_temp == 1:
 			leader_goal = "upper_right"
-		elif leader_temp == "bottom_right":
+		elif leader_temp == 2:
 			leader_goal = "bottom_right"
 		leader_target = leader_goals[leader_goal]
 		print(leader_goal,leader_location[0],leader_location[0]%3)
