@@ -361,7 +361,7 @@ def check_for_charger():
 		bot = robot.getFromDef(robot_name_constant+r)
 		location  = bot.getField('translation').getSFVec3f()
 		dist = get_distance(location,charging_station_location)
-		if dist < 2:
+		if dist < 5:
 			bot.getField('battery').setMFFloat(0,100)
 
 
