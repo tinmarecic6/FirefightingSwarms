@@ -59,6 +59,12 @@ green_area = (-12,-9)
 center_of_arena = -10
 group_quadrants = [(-12,-7),(-7,-7),(-9,-12)]
 leader_locations = [(-12,-7),(-7,-7),(-7,-12)]
+leader_goals = {
+	"upper_left" : [-11,11],
+	"upper_right" : [11,11],
+	"bottom_right" : [11,-11],
+	"bottom_left" : [-11,-11]
+}
 light_intensity_decrement = 0.2
 robot_name_constant = "FireRobot"
 leader_name_constant = "_leader_"
@@ -371,7 +377,16 @@ def gen_swarm(no_robots):
 	children = root.getField('children')
 	children.importMFNodeFromString(-1, 'DEF ChargingStation ChargingStation { translation '+str(charging_station_location[0])+' '+str(charging_station_location[1])+' '+str(charging_station_location[2])+'}')
 	for leader_location in enumerate(leader_locations):
-		LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderGPS' : None, 'LeaderAngle' : None, 'Group' : '"""+str(leader_location[0])+"""', 'Orders' : 'Follow'}"""
+		leader_temp = leader_location[0]%3
+		if leader_temp == 0:
+			leader_goal = "upper_left"
+		elif leader_temp == 1:
+			leader_goal = "upper_right"
+		elif leader_temp == "bottom_right":
+			leader_goal = "bottom_right"
+		leader_target = leader_goals[leader_goal]
+		print(leader_goal,leader_location[0],leader_location[0]%3)
+		LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True, 'LeaderTarget' : """ +str(leader_target)+ """, 'LeaderGPS' : None, 'LeaderAngle' : None, 'Group' : '"""+str(leader_location[0])+"""', 'Orders' : 'Follow'}"""
 		robot_id,x,y = leader_location[0],leader_location[1][0],leader_location[1][1]
 		children.importMFNodeFromString(-1,'DEF '+robot_name_constant+leader_name_constant+str(robot_id)+' SimpleRobot { translation '+str(x)+' '+str(y)+' 0.1 customData "'+LeaderJson+'"}')
 		robots.update({(leader_name_constant+str(robot_id)):(x,y)})
