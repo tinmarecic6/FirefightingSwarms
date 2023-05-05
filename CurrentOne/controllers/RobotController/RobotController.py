@@ -1,4 +1,4 @@
-import math, ast, decimal
+import math, ast, decimal, time
 from controller import Robot
 
 TIME_STEP = 64
@@ -49,26 +49,6 @@ def HandleLight(left, right):
         rightSpeed = 10
     setSpeed(leftSpeed,rightSpeed)
 
-def HandleLightLeader(left, right):
-    leftSpeed = -2
-    rightSpeed = 2
-    if (left == 1000 and right == 1000):
-        leftSpeed = 0
-        rightSpeed = 0
-    elif (left == 1000):
-        leftSpeed = 6
-        rightSpeed = -3
-    elif (right == 1000):
-        leftSpeed = -3
-        rightSpeed = 6
-    elif (left>right):
-        leftSpeed = 6
-        rightSpeed = 3
-    elif (right>left):
-        leftSpeed = 3
-        rightSpeed = 6
-    setSpeed(leftSpeed,rightSpeed)
-
 def getRobotBearing():
     north = compass.getValues()
     rad = math.atan2(north[1], north[0])
@@ -116,6 +96,7 @@ def setSpeed(left,right):
     # elif leftSensorDistance < rightSensorDistance:
     #     left = -5
     #     right = 10
+
     wheels[0].setVelocity(left)
     wheels[1].setVelocity(right)
     wheels[2].setVelocity(left)
@@ -173,17 +154,29 @@ while robot.step(TIME_STEP) != -1:
         leftSensor = ls[0].getValue()
         rightSensor = ls[1].getValue()
         battery = robot.batterySensorGetValue()
-        if target != None and leftSensor < 500 and rightSensor < 500 and battery != 1:
-            orders = 'Follow'
-            driveToPoint(target)
-        elif battery != 1:
-            target = None
+        if target != None and len(target) == 2 and leftSensor < 300 and rightSensor < 300 and battery != 1:
+            distance = math.sqrt((target[0] - gps.getValues()[0])**2 + (target[1] - gps.getValues()[1])**2)
+            if distance < 1:
+                print(distance, target, gps.getValues())
+                target.append(leftSensor+rightSensor)
+                orders = 'FireFight'
+                HandleLight(leftSensor, rightSensor)
+            else:
+                orders = 'Follow'
+                driveToPoint(target)
+        elif target != None and battery != 1:
+            if len(target) == 2:
+                target.append(leftSensor+rightSensor)
             orders = 'FireFight'
-            HandleLightLeader(leftSensor, rightSensor)
+            HandleLight(leftSensor, rightSensor)
+        elif battery != 1:
+            orders = 'FireFight'
+            HandleLight(leftSensor, rightSensor)
         else:
+            target = None
             orders = 'Charger'
             driveToPoint(customData["Charger"])
-        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True,'LeaderTarget': """+str(target)+""", 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : 'Follow'}"""
+        LeaderJson = """{'Charger': [-10,-10,0.1], 'Leader' : True,'LeaderTarget': """+str(target)+""", 'LeaderGPS' : '"""+str(gps.getValues())+"""', 'LeaderAngle' : '"""+str((getRobotBearing())%360)+"""', 'Group' : '"""+str(group)+"""', 'Orders' : '"""+orders+"""'}"""
         robot.setCustomData(LeaderJson)
     else:
         if orders == 'Follow' and customData['LeaderGPS'] != None and customData['LeaderAngle'] != None:
