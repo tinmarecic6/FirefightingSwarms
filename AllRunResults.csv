@@ -145,3 +145,4 @@ runID,datetime,algorithm,no_robots,light_generation_chance,formation,time_passed
 143,05-05-2023_11-52-14,CurrentOne,12,0.01,7,600032,32
 144,05-05-2023_12-48-58,CurrentOne,12,0.001,7,57792,32
 145,05-05-2023_12-50-48,CurrentOne,12,0.005,7,149024,32
+146,08-05-2023_10-50-10,CurrentOne,12,0.005,5,111904,32

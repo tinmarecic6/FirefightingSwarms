@@ -1,2 +1,16 @@
-Ask steen about the line 306
-Will we compare the new algorithms to the simple algorithms?
+Write about the new algorithms in algorithm design.
+
+Add another section below explaining how these algorithms could work in real life and how the simulation is different.
+Include how the algorithms might fail and how this could be handled in real life.
+
+Expand on Background and related work with the partical algorithm and possibly more?
+Write about the partical algorithm and how it inspired the PI algorithm
+
+Extend the Methods of analyzing the algorithms sections
+Add the new results to Experiments and results and compare them
+
+Do discussion and conclusion (maybe together)
+Abstract
+
+
+
