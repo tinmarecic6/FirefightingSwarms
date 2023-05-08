@@ -145,7 +145,7 @@ def save_results(filename="AllRunResults.csv",datetime=0,no_robots=0,light_gen_c
 	data = {
 		'runID' : int(max_index),
 		'datetime': datetime,
-		'algorithm': "CurrentOne",
+		'algorithm': "PIAlgorithmWithAvoidance",
 		'no_robots':int(no_robots),
 		'light_generation_chance':light_gen_chance,
 		'formation':int(formation),
@@ -154,7 +154,7 @@ def save_results(filename="AllRunResults.csv",datetime=0,no_robots=0,light_gen_c
 	  	}
 	df.loc[len(df.index)] = data
 	df.to_csv(filename,index = False)
-	os.chdir("CurrentOne/controllers/fire/")
+	os.chdir("PIAlgorithmWithAvoidance/controllers/fire/")
 
 """
 Fire functions
@@ -287,8 +287,8 @@ def simulate_fire(children):
 		passed_time += timestep
 		if passed_time > simulation_time or not fire_locations:
 			save_results(no_robots=no_robots,light_gen_chance=light_gen_chance,formation=formation,passed_time=passed_time,timestep=timestep)
-			# save_and_exit()
-			robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
+			save_and_exit()
+			# robot.simulationSetMode("WB_SUPERVISOR_SIMULATION_MODE_PAUSE")
 			break
 
 """
@@ -411,7 +411,7 @@ def gen_swarm(no_robots):
 
 
 if __name__ == "__main__":
-	print("Running CurrentOne")
+	print("Running PIAlgorithmWithAvoidance")
 	arguments = readArgs()
 	run_id = int(arguments[0])
 	no_robots = int(arguments[1])
