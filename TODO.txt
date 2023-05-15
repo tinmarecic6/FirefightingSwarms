@@ -12,5 +12,7 @@ Abstract
 
 Discuss the results and the reasons for such numbers
 
+Make a state diagram to make the states more clear and readable?
+
 
 
