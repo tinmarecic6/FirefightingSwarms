@@ -1,18 +1,13 @@
-Write about the new algorithms in algorithm design.
-
-Add another section below explaining how these algorithms could work in real life and how the simulation is different.
-Include how the algorithms might fail and how this could be handled in real life.
-
-
-Extend the Methods of analyzing the algorithms sections
-Add the new results to Experiments and results and compare them
-
 Do discussion and conclusion (maybe together)
 Abstract
 
 Discuss the results and the reasons for such numbers
 
-Make a state diagram to make the states more clear and readable?
+Fix the tables data order
+
+do we need code snippets as per the project description
+
+ask about the diagram
 
 
 
